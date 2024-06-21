@@ -1,0 +1,35 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #87CEEB;
+}
+
+#single-container {
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+
+    width: 100vw;
+    height: 100vh;
+}
+
+#single-container h1 {
+    width: 100%;
+    margin-block-start: 15rem;
+    color: aliceblue;
+}
+
+#test-duck {
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    transform: rotateZ(135deg);
+    width: 140px;
+    height: 140px;
+    transition: transform 0.2s;
+}
