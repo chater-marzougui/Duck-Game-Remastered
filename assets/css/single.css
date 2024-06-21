@@ -10,18 +10,37 @@ body, html {
 }
 
 #single-container {
+    background: url(../images/homeBG.png) 0 0 / cover;
     overflow: hidden;
     position: relative;
     text-align: center;
-
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100vw;
     height: 100vh;
 }
 
 #single-container h1 {
-    width: 100%;
-    margin-block-start: 15rem;
-    color: aliceblue;
+    padding: 10px;
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    -webkit-backdrop-filter: blur(5px);
+    height: 40px;
+    color: blue;
+}
+
+#single-container button {
+    margin-top: 20px;
+    margin-bottom: 200px;
+    padding: 10px 20px;
+    border: 1px solid blue;
+    border-radius: 8px;
+    background-color: white;
+    color: blue;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 #test-duck {

@@ -5,12 +5,13 @@ const testContainer = document.getElementById('single-container');
 
 
 const duckImages = {
-    alive: '../assets/images/alive-duck.png',
-    dead: '../assets/images/dead-duck.png'
+    alive: 'assets/images/alive-duck.png',
+    dead: 'assets/images/dead-duck.png'
 };
 
 let clickCount = 1;
 const clickCoordinates = [];
+let startGameB = false;
 
 const corners = [
     { x: -40, y: -40, rotation: 135 },
@@ -32,9 +33,8 @@ duck.addEventListener('click', (event) => {
     
             if (clickCount === 4) {
                 saveCoordinates();
-                testContainer.style.display = 'none';
                 duck.style.display = 'none';
-                gameContainer.style.display = 'flex';
+                startGameB = true;
             } else {
                 clickCount++;
             }
@@ -43,13 +43,32 @@ duck.addEventListener('click', (event) => {
     }, 600);
 });
 
+function startGame() {
+    if(startGameB){
+    testContainer.style.display = 'none';
+    gameContainer.style.display = 'flex';
+    }
+    else{
+        alert('Please shoot the duck to adjust positioning');
+    }
+}
 function saveCoordinates() {
-    console.log(clickCoordinates)
-    /*
-    const file = new Blob([JSON.stringify(clickCoordinates)], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(file);
-    a.download = 'test.txt';
-    a.click();
-    */
+    fetch('http://localhost:5000/save_coordinates', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ coordinates: clickCoordinates })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Coordinates saved successfully');
+        } else {
+            console.error('Error saving coordinates:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
