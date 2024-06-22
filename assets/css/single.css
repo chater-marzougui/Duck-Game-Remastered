@@ -8,6 +8,7 @@ body, html {
     align-items: center;
     background-color: #87CEEB;
     overflow: hidden;
+    user-select: none;
 }
 
 #single-container {
@@ -88,4 +89,84 @@ body, html {
     width: 200px;
     height: auto;
     overflow: hidden;
+}
+
+.bullets {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    width:250px;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.foreground{
+    z-index: 4;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100% !important;
+    height: 15% !important;
+    height: auto;
+    overflow: hidden;
+
+}
+
+.bullets .bullet {
+    width: 45px !important;
+}
+
+.reload{
+    position: absolute;
+    visibility: hidden;
+    left: 100px;
+    bottom: 40px;
+    z-index: 5;
+    width: 120px !important;
+    height: 120px !important;
+    overflow: hidden;
+    animation: roll 2s infinite linear;
+}
+
+@keyframes roll {
+    100%{
+        transform: rotate(-360deg);
+    }
+}
+
+.scoreBoard{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    width: 200px;
+    border-radius: 15px;
+    top: 20px;
+    left: 20px;
+    padding: 8px 24px;
+    background-color: rgba(0, 254, 30, 0.5);
+}
+
+.scoreBoard h1{
+    color: aliceblue;
+    scale: 1.8;
+    letter-spacing: 5px;
+}
+
+.scoreBoard h2{
+    color: red;
+    scale: 1.8;
+    letter-spacing: 4px;
+}
+
+.kills {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 1.5rem;
+}
+
+.score-duck{
+    width: 70px !important;
 }

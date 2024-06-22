@@ -47,6 +47,7 @@ function startGame() {
     if(startGameB){
     testContainer.style.display = 'none';
     gameContainer.style.display = 'flex';
+    regenerate();
     }
     else{
         alert('Please shoot the duck to adjust positioning');

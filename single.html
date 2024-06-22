@@ -16,8 +16,40 @@
         <a href="./index.html" class="btn">Main Menu</a>
     </div>
     <div id="single-game-container">
-        <!-- ducks -->
+        <img class="foreground" src="./assets/images/foreground.png" alt="grass">
+        <img class="reload" src="./assets/images/reload.png" alt="arrows">
+        <div class="scoreBoard">
+            <div class="timer">
+                <h1 id="game-timer">05:00</h1>
+            </div>
+            <div class="kills">
+                <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
+                <h2 id="kill-count">&nbsp;</h2>
+            </div>
+        </div>
+        <div class="bullets">
+            <img class="bullet" src="./assets/images/bullet.png" alt="bullet">
+            <img class="bullet" src="./assets/images/bullet.png" alt="bullet">
+            <img class="bullet" src="./assets/images/bullet.png" alt="bullet">
+            <img class="bullet" src="./assets/images/bullet.png" alt="bullet">
+            <img class="bullet" src="./assets/images/bullet.png" alt="bullet">
+        </div>
+        <audio id="reload-sound" src="./assets/sound/reload.m4a"></audio>
+        <img id="double-kil-image" src="" alt="double kill">
+        <audio id="double-kil-sound" src="./assets/sound/doublekill.m4a"></audio>
+        <img id="triple-kil-image" src="" alt="triple kill">
+        <audio id="triple-kil-sound" src="./assets/sound/triplekill.m4a"></audio>
+        <img id="quad-kil-image" src="" alt="quad kill">
+        <audio id="quad-kil-sound" src="./assets/sound/quadra.m4a"></audio>
+        <img id="quintuple-kil-image" src="" alt="quintuple kill">
+        <audio id="quintuple-kil-sound" src="./assets/sound/holy.m4a"></audio>
     </div>
+    <div id="result" style="display: none;">
+        <!-- result content -->
+        <h1>Game Over</h1>
+        <p id="final-score">Your score: 0</p>
+    </div>
+    <audio id="shot-sound" src="./assets/sound/shot.m4a"></audio>
     <script>
         /*TODO: delete this script
         document.getElementById('single-container').style.display = 'none';
