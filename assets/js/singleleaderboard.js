@@ -17,6 +17,7 @@ async function fetchLeaderboard() {
     });
 }
 
+let sbChart1, sbChart2;
 async function updateDataVisualization() {
     const response = await fetch('http://localhost:5000/leaderboard');
     const leaderboard = await response.json();
@@ -70,11 +71,15 @@ async function updateDataVisualization() {
 
     const borderColors = colors.map(color => color.replace('0.5', '1'));
 
+    // Destroy existing charts if they exist
+    if (sbChart1) sbChart1.destroy();
+    if (sbChart2) sbChart2.destroy();
+
     // Create chart for number of players per SB
     const sbChartCanvas1 = document.getElementById('sbChart1');
     const sbChartCtx1 = sbChartCanvas1.getContext('2d');
 
-    const sbChart1 = new Chart(sbChartCtx1, {
+    sbChart1 = new Chart(sbChartCtx1, {
         type: 'pie',
         data: {
             labels: sbLabels,
@@ -113,7 +118,7 @@ async function updateDataVisualization() {
     const sbChartCanvas2 = document.getElementById('sbChart2');
     const sbChartCtx2 = sbChartCanvas2.getContext('2d');
 
-    const sbChart2 = new Chart(sbChartCtx2, {
+    sbChart2 = new Chart(sbChartCtx2, {
         type: 'pie',
         data: {
             labels: sbLabels,
@@ -130,10 +135,10 @@ async function updateDataVisualization() {
             plugins: {
                 legend: {
                     position: 'bottom',
-                  },
-                  title: {
+                },
+                title: {
                     display: true,
-                    text: 'Combined Score'
+                    text: 'Total Score per SB'
                 },
                 tooltip: {
                     callbacks: {
@@ -148,6 +153,9 @@ async function updateDataVisualization() {
         }
     });
 }
+
+updateDataVisualization();
+
 
 window.onload = fetchLeaderboard;
 updateDataVisualization()

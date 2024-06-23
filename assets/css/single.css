@@ -223,6 +223,7 @@ body, html {
     justify-content: center;
     align-items: center;
     width: 270px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .form-group {
@@ -230,6 +231,25 @@ body, html {
     flex-direction: column;
     width: 100%;
 }
+
+.contact-form input[type="text"],
+.contact-form textarea {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #971D96;
+    border-radius: 5px;
+}
+
+.contact-form textarea {
+    margin-bottom: 0px !important;
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form textarea:focus {
+    outline: 2px solid #971D96;
+}
+
 .main-btn{
     text-align: center;
     border: 1px solid #fff;

@@ -1,5 +1,6 @@
 const gameDuration = 2.5 * 60 * 1000;
 let numberToUpdate = 9;
+let maxNumberToUpdate = 250;
 
 const singleGameContainer = document.getElementById('single-game-container');
 const bulletsContainer = document.querySelector('.bullets');
@@ -68,7 +69,7 @@ function detectHit(shotX, shotY) {
             killCount++;
             hits++;
             if(killCount===1){startGameTimer();}
-            if(killCount%numberToUpdate ===0){
+            if(killCount%numberToUpdate ===0 && killCount<maxNumberToUpdate){
                 createDuck();
             }
             updateKillCount()

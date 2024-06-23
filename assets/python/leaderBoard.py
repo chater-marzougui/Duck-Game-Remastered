@@ -8,7 +8,6 @@ CORS(app)
 
 leaderboard_file = 'leaderboard.json'
 
-# Ensure leaderboard file exists
 if not os.path.exists(leaderboard_file):
     with open(leaderboard_file, 'w') as file:
         json.dump({"bestScore": 1, "entries": []}, file)
@@ -24,18 +23,16 @@ def submit_score():
     with open(leaderboard_file, 'r') as file:
         leaderboard = json.load(file)
 
-    # Update best score if necessary
     if theScore > leaderboard["bestScore"]:
         leaderboard["bestScore"] = theScore
 
-    # Add new entry
     leaderboard["entries"].append({
         "SB": SB,
         "userName": userName,
         "theMessage": theMessage,
         "theScore": theScore
     })
-    # Sort entries by score
+    
     leaderboard["entries"].sort(key=lambda entry: entry["theScore"], reverse=True)
 
     with open(leaderboard_file, 'w') as file:
