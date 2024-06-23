@@ -19,7 +19,7 @@ const corners = [
     { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
     { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
 ];
-
+const testBullet = new Bullet(testContainer);
 duck.addEventListener('click', (event) => {
     duck.src = duckImages.dead;
     testBullet.show(event.clientX, event.clientX);

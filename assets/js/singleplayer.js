@@ -1,4 +1,4 @@
-const gameDuration = 0.2 * 60 * 1000;
+const gameDuration = 2.5 * 60 * 1000;
 let numberToUpdate = 9;
 
 const singleGameContainer = document.getElementById('single-game-container');
@@ -19,7 +19,6 @@ let canShoot = true;
 let killCount = 0;
 let bestScore = 0;
 const bullet = new Bullet(singleGameContainer);
-// Function to create a new duck
 function createDuck() {
     const x = Math.round(Math.random()) * window.innerWidth;
     const y = Math.random() * singleGameContainer.clientHeight;
@@ -159,23 +158,11 @@ function startGameTimer() {
         }
     }, 800);
 }
-/*
-function ensureDucks() {
-    const additionalDucks = Math.floor(killCount / 5);
-    const targetDucks = 7 + additionalDucks;
-    while (ducks.length < targetDucks) {
-        createDuck();
-    }
-}*/
-
-// Function to update the timer display
 function updateTimerDisplay() {
     const minutes = Math.floor(timeRemaining / 60000);
     const seconds = Math.floor((timeRemaining % 60000) / 1000);
     timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
-
-// Function to end the game
 function endGame() {
     gameContainer.style.display = 'none';
     resultContainer.style.display = 'flex';
