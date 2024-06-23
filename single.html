@@ -56,7 +56,7 @@
                     <h2 id="final-score">Your score: 0</h2>
                 </div>
                 <h3 id="result-top-score">best score:</h3>
-                <hr>
+                <div class="whiteline"></div>
                 <form class="contact-form" ; onsubmit="sendToLeaderBoard() ; reset() ; return false ;">
                     <div class="form-group">
                     <label for="user-name">Name:</label>
@@ -72,6 +72,12 @@
                     </div>
                     <button type="submit" class="main-btn"><h3>Submit</h3></button>
                 </form>
+                <div class="whiteline"></div>
+                <div class="resultOptions">
+                    <a href="./index.html" class="btn">Main Menu</a>
+                    <button onclick="startGame()" class="btn">RePlay</button>
+                    <a href="./leaderboard.html" class="btn">LeaderBoard</a>
+                </div>
             </div>
         </div>
     </div>

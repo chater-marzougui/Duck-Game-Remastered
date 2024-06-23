@@ -19,11 +19,10 @@ const corners = [
     { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
     { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
 ];
-const testBullet = new Bullet(testContainer);
+
 duck.addEventListener('click', (event) => {
-    event.stopPropagation();
-    testBullet.show(event.clientX, event.clientX);
     duck.src = duckImages.dead;
+    testBullet.show(event.clientX, event.clientX);
     setTimeout(() => {
         if (clickCount < 5) {
             const { x, y, rotation } = corners[clickCount>3?3:clickCount];
@@ -48,6 +47,7 @@ function startGame() {
     if(startGameB){
     testContainer.style.display = 'none';
     gameContainer.style.display = 'flex';
+    document.getElementById('result').style.display = 'none';
     const startSound = document.getElementById('start-sound');
     startSound.currentTime = 0;
     startSound.play();
@@ -77,4 +77,10 @@ function saveCoordinates() {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+function deb() {
+    testContainer.style.display = 'none';
+    gameContainer.style.display = 'none';
+    document.getElementById('result').style.display = 'flex';
 }
