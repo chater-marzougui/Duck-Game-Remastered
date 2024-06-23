@@ -19,9 +19,10 @@ const corners = [
     { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
     { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
 ];
-
+const testBullet = new Bullet(testContainer);
 duck.addEventListener('click', (event) => {
     event.stopPropagation();
+    testBullet.show(event.clientX, event.clientX);
     duck.src = duckImages.dead;
     setTimeout(() => {
         if (clickCount < 5) {

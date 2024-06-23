@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeaderBoard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .leaderboard {
+            width: 80%;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .leaderboard h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .leaderboard-table th, .leaderboard-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .leaderboard-table th {
+            background-color: #f2f2f2;
+        }
+        .leaderboard-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            margin-top: 20px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="sbChart" width="400" height="200"></canvas>
+    <div class="leaderboard">
+        <h1>LeaderBoard</h1>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Branch</th>
+                    <th>Score</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        async function fetchLeaderboard() {
+            const response = await fetch('http://localhost:5000/leaderboard');
+            const scores = await response.json();
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = '';
+            updateDataVisualization();
+            scores.entries.forEach((score, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${score.userName}</td>
+                    <td>${score.SB}</td>
+                    <td>${score.theScore}</td>
+                    <td>${score.theMessage}</td>
+                `;
+                leaderboardBody.appendChild(row);
+            });
+        }
+
+        async function updateDataVisualization() {
+            const response = await fetch('http://localhost:5000/leaderboard');
+            const leaderboard = await response.json();
+
+            const sbData = {};
+            leaderboard.entries.forEach(entry => {
+                if (!sbData[entry.SB]) {
+                    sbData[entry.SB] = {
+                        count: 0,
+                        totalScore: 0
+                    };
+                }
+                sbData[entry.SB].count++;
+                sbData[entry.SB].totalScore += entry.theScore;
+            });
+
+            const sbChartCanvas = document.getElementById('sbChart');
+            const sbChartCtx = sbChartCanvas.getContext('2d');
+
+            const sbLabels = Object.keys(sbData);
+            const sbCounts = sbLabels.map(sb => sbData[sb].count);
+            const sbTotalScores = sbLabels.map(sb => sbData[sb].totalScore);
+
+            const sbChart = new Chart(sbChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: sbLabels,
+                    datasets: [{
+                        label: 'Number of Players per SB',
+                        data: sbCounts,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Total Score per SB',
+                        data: sbTotalScores,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fetch and display the leaderboard when the page loads
+        window.onload = fetchLeaderboard;
+    </script>
+</body>
+</html>

@@ -211,6 +211,13 @@ body, html {
     border: 1px solid #fff;
 }
 
+.col-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
 .contact-form {
     display: flex;
     flex-direction: column;

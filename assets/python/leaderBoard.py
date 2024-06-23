@@ -35,6 +35,8 @@ def submit_score():
         "theMessage": theMessage,
         "theScore": theScore
     })
+    # Sort entries by score
+    leaderboard["entries"].sort(key=lambda entry: entry["theScore"], reverse=True)
 
     with open(leaderboard_file, 'w') as file:
         json.dump(leaderboard, file)
@@ -45,6 +47,7 @@ def submit_score():
 def get_leaderboard():
     with open(leaderboard_file, 'r') as file:
         leaderboard = json.load(file)
+        leaderboard["entries"].sort(key=lambda entry: entry["theScore"], reverse=True)
     return jsonify(leaderboard)
 
 if __name__ == '__main__':
