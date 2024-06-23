@@ -1,5 +1,6 @@
-const gameDuration = 5 * 60 * 1000;
-let numberToUpdate = 11;
+const gameDuration = 0.2 * 60 * 1000;
+let numberToUpdate = 9;
+
 class Duck {
     constructor(id, x, y, direction, container) {
         this.id = ducks.length + 1;
@@ -9,15 +10,15 @@ class Duck {
         this.alive = true;
         this.speed = Math.random() * 2 + 2;
         this.images = [
-            '../assets/images/flyingduck/flyingduck1.png',
-            '../assets/images/flyingduck/flyingduck2.png',
-            '../assets/images/flyingduck/flyingduck3.png',
-            '../assets/images/flyingduck/flyingduck4.png',
-            '../assets/images/flyingduck/flyingduck5.png',
-            '../assets/images/flyingduck/flyingduck6.png',
-            '../assets/images/flyingduck/flyingduck7.png',
-            '../assets/images/flyingduck/flyingduck8.png',
-            '../assets/images/flyingduck/deadduck.png'
+            'assets/images/flyingduck/flyingduck1.png',
+            'assets/images/flyingduck/flyingduck2.png',
+            'assets/images/flyingduck/flyingduck3.png',
+            'assets/images/flyingduck/flyingduck4.png',
+            'assets/images/flyingduck/flyingduck5.png',
+            'assets/images/flyingduck/flyingduck6.png',
+            'assets/images/flyingduck/flyingduck7.png',
+            'assets/images/flyingduck/flyingduck8.png',
+            'assets/images/flyingduck/deadduck.png'
         ];
         this.currentImageIndex = 0;
         this.element = document.createElement('img');
@@ -88,7 +89,7 @@ class Bullet {
     constructor(container) {
         this.container = container;
         this.element = document.createElement('img');
-        this.element.src = '../assets/images/shot1.png';
+        this.element.src = 'assets/images/shot1.png';
         this.element.style.position = 'absolute';
         this.element.style.display = 'none';
         this.element.style.width = '50px';
@@ -102,17 +103,15 @@ class Bullet {
         this.element.style.display = 'block';
         this.element.style.opacity = '1';
         
-        // Play shot sound
         const shotSound = document.getElementById('shot-sound');
-        shotSound.currentTime = 0; // Rewind to start
+        shotSound.currentTime = 0;
         shotSound.play();
         
-        // Hide after 0.5s
         setTimeout(() => {
             this.element.style.opacity = '0';
             setTimeout(() => {
                 this.element.style.display = 'none';
-            }, 500); // Wait for transition to finish
+            }, 500);
         }, 500);
     }
 }
@@ -125,6 +124,7 @@ const resultContainer = document.getElementById('result');
 const timerElement = document.getElementById('game-timer');
 const killCountElement = document.getElementById('kill-count');
 const finalScoreElement = document.getElementById('final-score');
+const finalTopScoreElement = document.getElementById('result-top-score');
 
 let gameTimer;
 let timeRemaining = gameDuration;
@@ -132,6 +132,7 @@ let timeRemaining = gameDuration;
 let bulletsRemaining = bullets.length;
 let canShoot = true;
 let killCount = 0;
+let bestScore = 0;
 const bullet = new Bullet(singleGameContainer);
 // Function to create a new duck
 function createDuck() {
@@ -158,6 +159,9 @@ function updateDucks() {
 updateDucks();
 
 function showKillNotification(imageId, soundId) {
+    const shotSound = document.getElementById('shot-sound');
+    shotSound.pause();
+    shotSound.currentTime = 0;
     const killImg = document.getElementById(imageId);
     const killSound = document.getElementById(soundId);
     killSound.currentTime = 0;
@@ -165,7 +169,7 @@ function showKillNotification(imageId, soundId) {
     killImg.style.display = 'flex';
     setTimeout(() => {
         killImg.style.display = 'none';
-    }, 1000);
+    }, 1500);
 }
 
 // Function to detect hits
@@ -284,12 +288,47 @@ function updateTimerDisplay() {
     const minutes = Math.floor(timeRemaining / 60000);
     const seconds = Math.floor((timeRemaining % 60000) / 1000);
     timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    console.log(ducks,"  ",ducks.length);
 }
 
 // Function to end the game
 function endGame() {
     gameContainer.style.display = 'none';
     resultContainer.style.display = 'flex';
+    const endSound = document.getElementById('end-sound');
+    endSound.currentTime = 0;
+    endSound.play();
     finalScoreElement.textContent = `Your score: ${killCount}`;
+    finalTopScoreElement.textContent = `Top score: ${bestScore > killCount ? bestScore : killCount}`;
+}
+
+function sendToLeaderBoard() {
+    const SB = document.getElementById("IEEE-SB").value;
+    const userName = document.getElementById("name").value;
+    const theMessage = document.getElementById("message").value;
+    const theScore = killCount;
+
+    fetch('http://localhost:5000/submit-score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ SB, userName, theMessage, theScore }),
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function displayBestScore() {
+    fetch('http://localhost:5000/leaderboard')
+        .then(response => response.json())
+        .then(data => {
+            bestScore = data.bestScore;
+            document.getElementById('top-score').textContent = `Best score : ${bestScore}`
+        })
+        .catch(error => console.error('Error:', error));
 }

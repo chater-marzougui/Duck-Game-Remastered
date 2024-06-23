@@ -14,6 +14,7 @@
         </h1>
         <button onclick="startGame()">Start</button>
         <a href="./index.html" class="btn">Main Menu</a>
+        <audio id="start-sound" src="./assets/sound/start.wav"></audio>
     </div>
     <div id="single-game-container">
         <img class="foreground" src="./assets/images/foreground.png" alt="grass">
@@ -24,8 +25,9 @@
             </div>
             <div class="kills">
                 <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
-                <h2 id="kill-count">&nbsp;</h2>
+                <h2 id="kill-count">0</h2>
             </div>
+            <h3 id="top-score">best score:</h3>
         </div>
         <div class="bullets">
             <img class="bullet" src="./assets/images/bullet.png" alt="bullet">
@@ -43,11 +45,35 @@
         <audio id="quad-kil-sound" src="./assets/sound/quadra.m4a"></audio>
         <img id="quintuple-kil-image" src="" alt="quintuple kill">
         <audio id="quintuple-kil-sound" src="./assets/sound/holy.m4a"></audio>
+        <audio id="end-sound" src="./assets/sound/end.wav"></audio>
     </div>
-    <div id="result" style="display: none;">
-        <!-- result content -->
-        <h1>Game Over</h1>
-        <p id="final-score">Your score: 0</p>
+    <div id="result">
+        <div class="column">
+            <h1><img class="hunter" src="./assets/images/hunter.png" alt="hunter"> Game Over</h1>
+            <div class="col-container">
+                <div class="kills">
+                    <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
+                    <h2 id="final-score">Your score: 0</h2>
+                </div>
+                <h3 id="result-top-score">best score:</h3>
+                <hr>
+                <form class="contact-form" ; onsubmit="sendToLeaderBoard() ; reset() ; return false ;">
+                    <div class="form-group">
+                    <label for="user-name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="IEEE">IEEE Student Branch:</label>
+                        <input type="text" id="IEEE-SB" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Side Note:</label>
+                        <textarea id="message" name="message"></textarea>
+                    </div>
+                    <button type="submit" class="main-btn"><h3>Submit</h3></button>
+                </form>
+            </div>
+        </div>
     </div>
     <audio id="shot-sound" src="./assets/sound/shot.m4a"></audio>
     <script>
