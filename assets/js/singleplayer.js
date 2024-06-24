@@ -1,7 +1,3 @@
-const gameDuration = 2.5 * 60 * 1000;
-let numberToUpdate = 9;
-let maxNumberToUpdate = 250;
-
 const singleGameContainer = document.getElementById('single-game-container');
 const bulletsContainer = document.querySelector('.bullets');
 const bullets = bulletsContainer.querySelectorAll('.bullet');
@@ -19,7 +15,13 @@ let bulletsRemaining = bullets.length;
 let canShoot = true;
 let killCount = 0;
 let bestScore = 0;
+// TO ADJUST
+const gameDuration = 2.5 * 60 * 1000;
+let numberToUpdate = 9;
+let maxNumberToUpdate = 250;
+
 const bullet = new Bullet(singleGameContainer);
+
 function createDuck() {
     const x = Math.round(Math.random()) * window.innerWidth;
     const y = Math.random() * singleGameContainer.clientHeight;
@@ -28,20 +30,12 @@ function createDuck() {
     ducks.push(duck);
 }
 
-// Initialize ducks array and create initial ducks
-let ducks = [];
-for (let i = 0; i < 7; i++) {
-    createDuck();
-}
-
-// Function to update positions of ducks
 function updateDucks() {
     ducks.forEach(duck => {
         duck.updatePosition();
     });
     requestAnimationFrame(updateDucks);
 }
-updateDucks();
 
 function showKillNotification(imageId, soundId) {
     const shotSound = document.getElementById('shot-sound');
@@ -57,7 +51,6 @@ function showKillNotification(imageId, soundId) {
     }, 1500);
 }
 
-// Function to detect hits
 function detectHit(shotX, shotY) {
     let hits = 0;
     ducks.forEach(duck => {
@@ -99,6 +92,7 @@ function detectHit(shotX, shotY) {
             break;
     }
 }
+
 function regenerate(){
     ducks.forEach(duck => {
         duck.element.remove();
@@ -108,9 +102,11 @@ function regenerate(){
         createDuck();
     }
 }
+
 function updateKillCount() {
     killCountElement.textContent = killCount;
 }
+
 function regenerateBullets() {
     const shotSound = document.getElementById('reload-sound');
     shotSound.currentTime = 0;
@@ -122,6 +118,7 @@ function regenerateBullets() {
         reload.style.visibility = 'hidden';
     }, 2000);
 }
+
 function updateBullets() {
     bullets.forEach((bullet, index) => {
         bullet.style.visibility = index < bulletsRemaining ? 'visible' : 'hidden';
@@ -141,10 +138,6 @@ function shoot(x, y) {
         }
     }
 }
-singleGameContainer.addEventListener('click', (event) => {
-    event.stopPropagation();
-    shoot(event.clientX, event.clientY);
-});
 
 function startGameTimer() {
     const endTime = Date.now() + gameDuration;
@@ -159,11 +152,13 @@ function startGameTimer() {
         }
     }, 800);
 }
+
 function updateTimerDisplay() {
     const minutes = Math.floor(timeRemaining / 60000);
     const seconds = Math.floor((timeRemaining % 60000) / 1000);
     timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
+
 function endGame() {
     gameContainer.style.display = 'none';
     resultContainer.style.display = 'flex';
@@ -205,3 +200,15 @@ function displayBestScore() {
         })
         .catch(error => console.error('Error:', error));
 }
+
+let ducks = [];
+for (let i = 0; i < 7; i++) {
+    createDuck();
+}
+
+singleGameContainer.addEventListener('click', (event) => {
+    event.stopPropagation();
+    shoot(event.clientX, event.clientY);
+});
+
+updateDucks();

@@ -12,6 +12,22 @@ if not os.path.exists(leaderboard_file):
     with open(leaderboard_file, 'w') as file:
         json.dump({"bestScore": 1, "entries": []}, file)
 
+@app.route('/save_coordinates', methods=['POST'])
+def save_coordinates():
+    data = request.json
+    coordinates = data.get('coordinates')
+    
+    if not coordinates:
+        return jsonify({"status": "error", "message": "No coordinates provided"}), 400
+    
+    try:
+        file_path = os.path.join('coordinates.txt')
+        #with open(file_path, 'w') as file:
+        #    file.write(str(coordinates))
+        return jsonify({"status": "success", "message": "Coordinates saved successfully"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/submit-score', methods=['POST'])
 def submit_score():
     data = request.json

@@ -45,7 +45,7 @@ cap = cv2.VideoCapture(0)
 # Create a window
 cv2.namedWindow('Frame')
 
-# Create trackbars for adjusting blur kernel size and threshold value
+# Create trackbar for adjusting blur kernel size and threshold value
 cv2.createTrackbar('Blur', 'Frame', 15, 50, nothing)
 cv2.createTrackbar('Threshold', 'Frame', 200, 255, nothing)
 
@@ -53,7 +53,7 @@ while True:
     # Capture frame-by-frame
     ret, frame = cap.read()
     
-    # Get current positions of the trackbars
+    # Get current positions of the trackbar
     blur_ksize = cv2.getTrackbarPos('Blur', 'Frame')
     threshold_value = cv2.getTrackbarPos('Threshold', 'Frame')
     
