@@ -8,6 +8,12 @@ const killCountElement = document.getElementById('kill-count');
 const finalScoreElement = document.getElementById('final-score');
 const finalTopScoreElement = document.getElementById('result-top-score');
 
+// TO ADJUST
+const gameDuration = 2.5 * 60 * 1000;
+let numberToUpdate = 9;
+let maxNumberToUpdate = 250;
+
+
 let gameTimer;
 let timeRemaining = gameDuration;
 
@@ -15,11 +21,6 @@ let bulletsRemaining = bullets.length;
 let canShoot = true;
 let killCount = 0;
 let bestScore = 0;
-// TO ADJUST
-const gameDuration = 2.5 * 60 * 1000;
-let numberToUpdate = 9;
-let maxNumberToUpdate = 250;
-
 const bullet = new Bullet(singleGameContainer);
 
 function createDuck() {
@@ -39,8 +40,7 @@ function updateDucks() {
 
 function showKillNotification(imageId, soundId) {
     const shotSound = document.getElementById('shot-sound');
-    shotSound.pause();
-    shotSound.currentTime = 0;
+    shotSound.volume = 0.4;
     const killImg = document.getElementById(imageId);
     const killSound = document.getElementById(soundId);
     killSound.currentTime = 0;

@@ -307,3 +307,12 @@ body, html {
 .resultOptions .btn:last-child {
     background-color: #3498db;
 }
+
+.kill-image{
+    width: 400px !important;
+    position: absolute;
+    height: auto!important;
+    left: calc(50% - 200px);
+    display: none;
+    top: 6%;
+}
