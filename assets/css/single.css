@@ -35,7 +35,6 @@ body, html {
 
 #single-container button {
     margin-top: 20px;
-    margin-bottom: 200px;
     padding: 10px 20px;
     border: 1px solid blue;
     border-radius: 8px;
@@ -67,9 +66,43 @@ body, html {
     cursor: pointer;
 }
 
+.time-adjust {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+#adjustTimeBtn{
+    border: none !important;
+    border-radius: 18px !important;
+    background-color: transparent !important;
+    color: white !important;
+    text-decoration: none;
+    font-size: 16px !important;
+    cursor: pointer;
+}
 
+#timeForm {
+    margin-top: 20px;
+}
 
+#timeForm label {
+    color: #fff;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#timeForm input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
 /*Single Game Container here*/
 

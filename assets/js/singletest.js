@@ -84,3 +84,24 @@ function deb() {
     gameContainer.style.display = 'none';
     document.getElementById('result').style.display = 'flex';
 }
+
+document.getElementById('adjustTimeBtn').addEventListener('click', function() {
+    document.getElementById('timeForm').style.display = 'block';
+    document.getElementById('StartGame-Button').style.display = 'none';
+});
+
+function changeTime() {
+    var newTime = document.getElementById('newTime').value;
+
+    var minutes = Math.floor(newTime);
+    var seconds = Math.floor((newTime - minutes) * 60);
+    var minutesDisplay = String(minutes).padStart(2, '0');
+    var secondsDisplay = String(seconds).padStart(2, '0');
+    document.getElementById('game-timer').textContent = `${minutesDisplay}:${secondsDisplay}`;
+
+    document.getElementById('timeForm').style.display = 'none';
+    gameDuration = newTime * 60 * 1000;
+    startGame();
+
+    return false;
+}

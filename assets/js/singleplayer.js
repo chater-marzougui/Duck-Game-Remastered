@@ -9,7 +9,7 @@ const finalScoreElement = document.getElementById('final-score');
 const finalTopScoreElement = document.getElementById('result-top-score');
 
 // TO ADJUST
-const gameDuration = 2.5 * 60 * 1000;
+let gameDuration = 2 * 60 * 1000;
 let numberToUpdate = 9;
 let maxNumberToUpdate = 250;
 

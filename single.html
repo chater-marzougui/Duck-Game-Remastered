@@ -12,7 +12,15 @@
         <h1>
             Shoot the ducks to adjust the positioning
         </h1>
-        <button onclick="startGame()">Start</button>
+        <div class="time-adjust">
+            <button id="StartGame-Button" onclick="startGame()">Start</button>
+            <button id="adjustTimeBtn">Adjust Time</button>
+            <form id="timeForm" style="display: none;" onsubmit="return changeTime();">
+                <label for="newTime">New Time:</label>
+                <input type="text" id="newTime" name="newTime" value="2" required>
+                <button type="submit">Start</button>
+            </form>
+        </div>
         <a href="./index.html" class="btn">Main Menu</a>
         <audio id="start-sound" src="./assets/sound/start.wav"></audio>
     </div>
@@ -21,7 +29,7 @@
         <img class="reload" src="./assets/images/reload.png" alt="arrows">
         <div class="scoreBoard">
             <div class="timer">
-                <h1 id="game-timer">02:30</h1>
+                <h1 id="game-timer">02:00</h1>
             </div>
             <div class="kills">
                 <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
