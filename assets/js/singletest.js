@@ -91,12 +91,12 @@ document.getElementById('adjustTimeBtn').addEventListener('click', function() {
 });
 
 function changeTime() {
-    var newTime = document.getElementById('newTime').value;
+    const newTime = document.getElementById('newTime').value;
 
-    var minutes = Math.floor(newTime);
-    var seconds = Math.floor((newTime - minutes) * 60);
-    var minutesDisplay = String(minutes).padStart(2, '0');
-    var secondsDisplay = String(seconds).padStart(2, '0');
+    let minutes = Math.floor(newTime);
+    let seconds = Math.floor((newTime - minutes) * 60);
+    let minutesDisplay = String(minutes).padStart(2, '0');
+    let secondsDisplay = String(seconds).padStart(2, '0');
     document.getElementById('game-timer').textContent = `${minutesDisplay}:${secondsDisplay}`;
 
     document.getElementById('timeForm').style.display = 'none';
