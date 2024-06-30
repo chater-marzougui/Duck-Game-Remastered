@@ -9,7 +9,7 @@ const finalScoreElement = document.getElementById('final-score');
 const finalTopScoreElement = document.getElementById('result-top-score');
 
 // TO ADJUST
-let gameDuration = 2 * 60 * 1000;
+let gameDuration = 0.1 * 60 * 1000;
 let numberToUpdate = 9;
 let maxNumberToUpdate = 250;
 
@@ -70,6 +70,10 @@ function detectHit(shotX, shotY) {
         }
     });
     switch (hits) {
+        case 0:
+            break;
+        case 1:
+            break;
         case 2:
             showKillNotification('double-kil-image', 'double-kil-sound');
             break;
@@ -79,17 +83,10 @@ function detectHit(shotX, shotY) {
         case 4:
             showKillNotification('quad-kil-image', 'quad-kil-sound');
             break;
-        case 5:
-            showKillNotification('quintuple-kil-image', 'quintuple-kil-sound');
-            break;
-        case 6:
-            showKillNotification('quintuple-kil-image', 'quintuple-kil-sound');
-            break;
-        case 7:
-            showKillNotification('quintuple-kil-image', 'quintuple-kil-sound');
-            break;
         default:
+            showKillNotification('quintuple-kil-image', 'quintuple-kil-sound');
             break;
+            
     }
 }
 
@@ -150,7 +147,7 @@ function startGameTimer() {
         } else {
             updateTimerDisplay();
         }
-    }, 800);
+    }, 500);
 }
 
 function updateTimerDisplay() {
@@ -206,7 +203,7 @@ for (let i = 0; i < 7; i++) {
     createDuck();
 }
 
-singleGameContainer.addEventListener('click', (event) => {
+singleGameContainer.addEventListener( 'click' , (event) => {
     event.stopPropagation();
     shoot(event.clientX, event.clientY);
 });

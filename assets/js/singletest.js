@@ -45,14 +45,17 @@ duck.addEventListener('click', (event) => {
 
 function startGame() {
     if(startGameB){
-    testContainer.style.display = 'none';
-    gameContainer.style.display = 'flex';
-    document.getElementById('result').style.display = 'none';
-    const startSound = document.getElementById('start-sound');
-    startSound.currentTime = 0;
-    startSound.play();
-    regenerate();
-    displayBestScore()
+        testContainer.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        document.getElementById('result').style.display = 'none';
+        const startSound = document.getElementById('start-sound');
+        startSound.currentTime = 0;
+        startSound.play();
+        killCount = 0;
+        timeRemaining = gameDuration;
+        updateTimerDisplay();
+        regenerate();
+        displayBestScore()
     }
     else{
         alert('Please shoot the duck to adjust positioning');
