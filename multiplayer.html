@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Player</title>
+    <link rel="stylesheet" href="./assets/css/multiplayer.css">
+</head>
+<body>
+    <div id="single-container">
+        <img id="test-duck" src="./assets/images/alive-duck.png" alt="Duck">
+        <h1>
+            Shoot the ducks to adjust the positioning
+        </h1>
+        <div class="time-adjust">
+            <button id="StartGame-Button" onclick="startGame()">Start</button>
+            <button id="adjustTimeBtn">Adjust Time</button>
+            <form id="timeForm" style="display: none;" onsubmit="return changeTime();">
+                <label for="newTime">New Time:</label>
+                <input type="text" id="newTime" name="newTime" value="2" required>
+                <button type="submit">Start</button>
+            </form>
+        </div>
+        <a href="./index.html" class="btn">Main Menu</a>
+        <audio id="start-sound" src="./assets/sound/start.wav"></audio>
+    </div>
+    <div id="multi-game-container">
+        <img class="foreground" src="./assets/images/foreground.png" alt="grass">
+        <img class="reload" src="./assets/images/reload.png" alt="arrows">
+        <div class="scoreBoard">
+            <div class="timer">
+                <h1 id="game-timer">02:00</h1>
+            </div>
+            <div class="score">
+                <h2 id="score">Score: 0</h2>
+            </div>
+        </div>
+        <div id="duckContainer">
+            <!-- Ducks will be dynamically generated here -->
+        </div>
+        <div id="bulletContainer">
+            <!-- Bullets will be dynamically generated here -->
+        </div>
+        <div id="game-over">
+            <h1>Game Over</h1>
+            <h2 id="final-score">Your score: 0</h2>
+    </div>
+
+
+    <audio id="shot-sound" src="./assets/sound/shot.m4a"></audio>
+    <script src="./assets/js/classes.js"></script>
+    <script src="./assets/js/multiplayer.js"></script>
+</body>
+</html>

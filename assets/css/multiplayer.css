@@ -1,0 +1,105 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #87CEEB;
+    overflow: hidden;
+    user-select: none;
+}
+
+#single-container {
+    background: url(../images/homeBG.png) 0 0 / cover;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+#single-container h1 {
+    padding: 10px;
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    -webkit-backdrop-filter: blur(5px);
+    height: 40px;
+    color: blue;
+}
+
+#single-container button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 1px solid blue;
+    border-radius: 8px;
+    background-color: white;
+    color: blue;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#test-duck {
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    transform: rotateZ(135deg);
+    width: 140px;
+    height: 140px;
+    transition: transform 0.2s;
+}
+
+#single-container a {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 1px solid blue;
+    border-radius: 8px;
+    background-color: white;
+    color: blue;
+    text-decoration: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.time-adjust {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#adjustTimeBtn{
+    border: none !important;
+    border-radius: 18px !important;
+    background-color: transparent !important;
+    color: white !important;
+    text-decoration: none;
+    font-size: 16px !important;
+    cursor: pointer;
+}
+
+#timeForm {
+    margin-top: 20px;
+}
+
+#timeForm label {
+    color: #fff;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#timeForm input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
