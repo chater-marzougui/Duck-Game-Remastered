@@ -6,16 +6,18 @@ const resultContainer = document.getElementById('result');
 const timerElement = document.getElementById('game-timer');
 const killCountElement = document.getElementById('kill-count');
 const finalScoreElement = document.getElementById('final-score');
+const clickSpace = document.getElementById('click-space');
 const finalTopScoreElement = document.getElementById('result-top-score');
 
 // TO ADJUST
-let gameDuration = 0.1 * 60 * 1000;
+let gameDuration = 2 * 60 * 1000;
 let numberToUpdate = 9;
 let maxNumberToUpdate = 250;
 
 
 let gameTimer;
 let timeRemaining = gameDuration;
+updateTimerDisplay();
 
 let bulletsRemaining = bullets.length;
 let canShoot = true;
@@ -203,7 +205,7 @@ for (let i = 0; i < 7; i++) {
     createDuck();
 }
 
-singleGameContainer.addEventListener( 'click' , (event) => {
+clickSpace.addEventListener( 'click' , (event) => {
     event.stopPropagation();
     shoot(event.clientX, event.clientY);
 });

@@ -84,8 +84,8 @@ function saveCoordinates() {
 
 function deb() {
     testContainer.style.display = 'none';
-    gameContainer.style.display = 'none';
-    document.getElementById('result').style.display = 'flex';
+    gameContainer.style.display = 'flex';
+    document.getElementById('result').style.display = 'none';
 }
 
 document.getElementById('adjustTimeBtn').addEventListener('click', function() {
