@@ -28,11 +28,16 @@ let player2canShoot = true;
 let player2killCount = 0;
 
 let bestScore = 0;
-const bullet = new Bullet(singleGameContainer);
+const bullet1 = new Bullet(singleGameContainer);
+const bullet2 = new Bullet(singleGameContainer ,false);
+
+
 
 let ducks = [];
-for (let i = 0; i < 7; i++) {
-    createDuck();
+function initializeDucks(){
+    for (let i = 0; i < 7; i++) {
+        createDuck();
+    }
 }
 
 function createDuck() {
@@ -135,7 +140,7 @@ function updateKillCount(thePlayer) {
     }
 }
 
-function regenerateBullets() {
+function regenerateBullets1() {
     const shotSound = document.getElementById('reload-sound');
     shotSound.currentTime = 0;
     shotSound.play();
@@ -154,7 +159,7 @@ function regenerateBullets2() {
     setTimeout(() => {
         player2BulletsRemaining = player2Bullets.length;
         updateBullets2();
-        player1canShoot = true;
+        player2canShoot = true;
         player2Reload.style.visibility = 'hidden';
     }, 2000);
 }
@@ -173,8 +178,8 @@ function updateBullets2() {
 
 function shoot(x, y , player) {
     if (player1canShoot && player1BulletsRemaining > 0 && player == "player1") {
-        bullet.show(x, y);
-        detectHit(x, y , player);
+        bullet1.show(x, y);
+        detectHit(x, y , "player1");
         player1BulletsRemaining--;
         updateBullets1();
         if (player1BulletsRemaining === 0) {
@@ -184,8 +189,8 @@ function shoot(x, y , player) {
         }
     }
     if (player2canShoot && player2BulletsRemaining > 0 && player == "player2") {
-        bullet.show(x, y);
-        detectHit(x, y, player);
+        bullet2.show(x, y);
+        detectHit(x, y, "player2");
         player2BulletsRemaining--;
         updateBullets2();
         if (player2BulletsRemaining === 0) {
@@ -262,13 +267,13 @@ let player1 = setInterval(() => {
     let player1_x = Math.random() * singleGameContainer.clientWidth;
     let player1_y = Math.random() * singleGameContainer.clientHeight;
     shoot(player1_x, player1_y, "player1")
-}, 500);
+}, 1100);
 
 let player2 = setInterval(() => {
     let player2_x = Math.random() * singleGameContainer.clientWidth;
     let player2_y = Math.random() * singleGameContainer.clientHeight;
     shoot(player2_x, player2_y, "player2")
-}, 700);
+}, 1500);
 
 updateDucks();
 

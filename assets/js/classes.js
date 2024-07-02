@@ -83,10 +83,10 @@ class Duck {
 }
 
 class Bullet {
-    constructor(container) {
+    constructor(container, useShot1 = true) {
         this.container = container;
         this.element = document.createElement('img');
-        this.element.src = 'assets/images/shot1.png';
+        this.element.src = useShot1 ? 'assets/images/shot1.png' : 'assets/images/shot2.png';
         this.element.style.position = 'absolute';
         this.element.style.display = 'none';
         this.element.style.width = '50px';

@@ -165,18 +165,6 @@ body, html {
 
 }
 
-.reload{
-    position: absolute;
-    visibility: hidden;
-    left: 100px;
-    bottom: 40px;
-    z-index: 5;
-    width: 120px !important;
-    height: 120px !important;
-    overflow: hidden;
-    animation: roll 2s infinite linear;
-}
-
 @keyframes roll {
     100%{
         transform: rotate(-360deg);
@@ -239,4 +227,24 @@ body, html {
 .bullet1, .bullet2 {
     width: 50px !important;
     height: auto !important;
+}
+
+.reload {
+    position: absolute;
+    bottom: 40px;
+    z-index: 5;
+    width: 120px !important;
+    height: 120px !important;
+    overflow: hidden;
+    animation: roll 2s infinite linear;
+}
+
+.reload-player1 {
+    left: 100px;
+    visibility: hidden;
+}
+
+.reload-player2 {
+    right: 100px;
+    visibility: hidden;
 }
