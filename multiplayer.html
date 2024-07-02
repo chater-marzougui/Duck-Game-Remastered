@@ -36,11 +36,10 @@
             </div>
             <div class="timer">
                 <h1 id="game-timer">02:00</h1>
-                <h1 id="top-score">0</h1>
             </div>
             <div class="kills">
                 <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
-                <h2 id="player1-kill-count">0</h2>
+                <h2 id="player2-kill-count">0</h2>
             </div>
         </div>
         <div class="bullets">
@@ -77,9 +76,26 @@
         </div>
     </div>
     <div id="result" style="display: none;">
-        <div id="game-over">
+        <div class="col">
             <h1>Game Over</h1>
-            <h2 id="final-score">Your score: 0</h2>
+            <div id="game-over">
+                <div id="player1-final" class="player-final">
+                    <h1>Player 1</h1>
+                    <h2 id="player1-score">Score: 0</h2>
+                    <img src="./assets/images/hunter.png" alt="hunter">
+                </div>
+                <div class="white-line"></div>
+                <div id="player2-final" class="player-final">
+                    <h1>Player 2</h1>
+                    <h2 id="player2-score">Score: 0</h2>
+                    <img src="./assets/images/hunter.png" alt="hunter">
+                </div>
+            </div>
+            <div class="resultOptions">
+                <a href="./index.html" class="btn">Main Menu</a>
+                <button onclick="startGame()" class="btn">RePlay</button>
+                <a href="./leaderboard.html" target="_blank" class="btn">LeaderBoard</a>
+            </div>
         </div>
     </div>
 

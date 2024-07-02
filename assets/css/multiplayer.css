@@ -104,32 +104,6 @@ body, html {
     border-radius: 4px;
 }
 
-
-
-
-/* Game Container */
-/*
-<div id="multi-game-container">
-        <img class="foreground" src="./assets/images/foreground.png" alt="grass">
-        <img class="reload" src="./assets/images/reload.png" alt="arrows">
-        <div class="scoreBoard">
-            <div class="timer">
-                <h1 id="game-timer">02:00</h1>
-            </div>
-            <div class="score">
-                <h2 id="score">Score: 0</h2>
-            </div>
-        </div>
-        <div id="duckContainer">
-            <!-- Ducks will be dynamically generated here -->
-        </div>
-        <div id="bulletContainer">
-            <!-- Bullets will be dynamically generated here -->
-        </div>
-        <div id="game-over">
-            <h1>Game Over</h1>
-            <h2 id="final-score">Your score: 0</h2>
-    </div>*/
 #multi-game-container {
     width: 100%;
     height: 100%;
@@ -203,10 +177,28 @@ body, html {
     flex-direction: row;
     align-items: center;
     column-gap: 1.8rem;
+    background-color: rgba(0, 254, 30, 0.5);
+    padding: 15px 30px;
+    width: 140px;
+    border-radius: 15px;
+}
+
+#game-timer {
+    font-size: 40px !important;
+    color: red;
 }
 
 .score-duck{
     width: 60px !important;
+}
+
+.kill-image{
+    width: 400px !important;
+    position: absolute;
+    height: auto!important;
+    left: calc(50% - 200px);
+    display: none;
+    top: 6%;
 }
 
 .bullets {
@@ -247,4 +239,104 @@ body, html {
 .reload-player2 {
     right: 100px;
     visibility: hidden;
+}
+
+
+
+/* Result */
+
+
+
+#result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: url('../images/homeBG.png') 0 0 / cover;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 70%;
+    background-color: rgba(0, 254, 30, 0.5);
+    border-radius: 25px;
+    border: 2px solid white;
+}
+
+#game-over {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+
+.player-final {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.player-final h2{
+    margin-block: 0;
+}
+
+.player-final img {
+    width: 140px;
+    height: auto;
+}
+
+#result .hunter {
+    position: absolute;
+    top: calc(50% - 275px);
+    left: calc(50% - 250px);
+    width: 100px;
+    height: auto;
+    overflow: hidden;
+}
+
+#result .white-line {
+    width: 2px;
+    height: 90%;
+    background-color: white;
+}
+
+.resultOptions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 15px;
+}
+
+.resultOptions .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #e74c3c; 
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: filter 1.3s ease;
+    filter: drop-shadow(2px 4px 6px rgba(17, 16, 16, 0.8));
+}
+
+.resultOptions .btn:first-child {
+    background-color: #b1c314;
+    filter: grayscale(5px);
+}
+
+.resultOptions .btn:last-child {
+    background-color: #3498db;
 }

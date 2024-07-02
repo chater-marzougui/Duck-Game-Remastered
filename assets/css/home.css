@@ -10,8 +10,7 @@ h1 {
 }
 
 body {
-    background-image: url(../images/homeBG.png);
-    background-size: cover;
+    background: url(../images/homeBG.png) 0 0 / cover;
 }
 
 .main-content {

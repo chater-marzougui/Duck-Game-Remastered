@@ -8,9 +8,9 @@ const resultContainer = document.getElementById('result');
 const timerElement = document.getElementById('game-timer');
 const player1killCountElement = document.getElementById('player1-kill-count');
 const player2killCountElement = document.getElementById('player2-kill-count');
-const finalScoreElement = document.getElementById('final-score');
+const finalScorePlayer1 = document.getElementById('player1-score');
+const finalScorePlayer2 = document.getElementById('player2-score');
 const clickSpace = document.getElementById('click-space');
-const finalTopScoreElement = document.getElementById('result-top-score');
 
 let gameDuration = 2 * 60 * 1000;
 let numberToUpdate = 9;
@@ -84,7 +84,7 @@ function detectHit(shotX, shotY, player) {
             }
         });
     }
-    if (player === "player1") {
+    if (player === "player2") {
         ducks.forEach(duck => {
             const duckRect = duck.element.getBoundingClientRect();
             if (
@@ -122,22 +122,15 @@ function detectHit(shotX, shotY, player) {
     }
 }
 
-function regenerate(){
+function removeDucks(){
     ducks.forEach(duck => {
         duck.element.remove();
     });
-    ducks = [];
-    for (let i = 0; i < 7; i++) {
-        createDuck();
-    }
 }
 
-function updateKillCount(thePlayer) {
-    if (thePlayer === "player1") {
-        player1killCountElement.textContent = player1killCount;
-    } else if (thePlayer === "player2") {
-        player2killCountElement.textContent = player2killCount;
-    }
+function updateKillCount() {
+    player1killCountElement.textContent = player1killCount;
+    player2killCountElement.textContent = player2killCount;
 }
 
 function regenerateBullets1() {
@@ -223,12 +216,14 @@ function updateTimerDisplay() {
 
 function endGame() {
     gameContainer.style.display = 'none';
+    removeDucks();
+    stopKilling();
     resultContainer.style.display = 'flex';
     const endSound = document.getElementById('end-sound');
     endSound.currentTime = 0;
     endSound.play();
-    finalScoreElement.textContent = `Your score: ${killCount}`;
-    finalTopScoreElement.textContent = `Top score: ${bestScore > killCount ? bestScore : killCount}`;
+    finalScorePlayer1.textContent = `Your score: ${player1killCount}`;
+    finalScorePlayer2.textContent = `Your score: ${player2killCount}`;
 }
 
 function sendToLeaderBoard() {
@@ -263,22 +258,31 @@ function displayBestScore() {
         .catch(error => console.error('Error:', error));
 }
 
-let player1 = setInterval(() => {
-    let player1_x = Math.random() * singleGameContainer.clientWidth;
-    let player1_y = Math.random() * singleGameContainer.clientHeight;
-    shoot(player1_x, player1_y, "player1")
-}, 1100);
+let player1Interval, player2Interval;
 
-let player2 = setInterval(() => {
-    let player2_x = Math.random() * singleGameContainer.clientWidth;
-    let player2_y = Math.random() * singleGameContainer.clientHeight;
-    shoot(player2_x, player2_y, "player2")
-}, 1500);
+function startKilling() {
+    player1Interval = setInterval(() => {
+        let player1_x = Math.random() * singleGameContainer.clientWidth;
+        let player1_y = Math.random() * singleGameContainer.clientHeight;
+        shoot(player1_x, player1_y, "player1");
+    }, 1100);
+
+    player2Interval = setInterval(() => {
+        let player2_x = Math.random() * singleGameContainer.clientWidth;
+        let player2_y = Math.random() * singleGameContainer.clientHeight;
+        shoot(player2_x, player2_y, "player2");
+    }, 1500);
+}
+
+function stopKilling() {
+    clearInterval(player1Interval);
+    clearInterval(player2Interval);
+}
 
 updateDucks();
 
 function deb() {
     testContainer.style.display = 'none';
-    gameContainer.style.display = 'flex';
-    document.getElementById('result').style.display = 'none';
+    gameContainer.style.display = 'none';
+    document.getElementById('result').style.display = 'flex';
 }

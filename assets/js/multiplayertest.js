@@ -72,8 +72,9 @@ function startGame() {
     const startSound = document.getElementById('start-sound');
     startSound.currentTime = 0;
     startSound.play();
-    // regenerate();
-    // displayBestScore()
+    initializeDucks();
+    startGameTimer();
+    startKilling();
     }
     else{
         alert('Please shoot the duck to adjust positioning');
