@@ -1,103 +1,279 @@
-const duck = document.getElementById('test-duck');
-const gameContainer = document.getElementById('multi-game-container');
-gameContainer.style.display = 'none';
-const testContainer = document.getElementById('single-container');
+const singleGameContainer = document.getElementById('multi-game-container');
+const bulletsContainer = document.querySelector('.bullets');
+const player1Bullets = bulletsContainer.querySelectorAll('.bullet1');
+const player2Bullets = bulletsContainer.querySelectorAll('.bullet2');
+const player1Reload = document.querySelector('.reload-player1');
+const player2Reload = document.querySelector('.reload-player2');
+const resultContainer = document.getElementById('result');
+const timerElement = document.getElementById('game-timer');
+const player1killCountElement = document.getElementById('player1-kill-count');
+const player2killCountElement = document.getElementById('player2-kill-count');
+const finalScoreElement = document.getElementById('final-score');
+const clickSpace = document.getElementById('click-space');
+const finalTopScoreElement = document.getElementById('result-top-score');
 
+let gameDuration = 2 * 60 * 1000;
+let numberToUpdate = 9;
+let maxNumberToUpdate = 250;
 
-const duckImages = {
-    alive: 'assets/images/alive-duck.png',
-    dead: 'assets/images/dead-duck.png'
-};
+let gameTimer;
+let timeRemaining = gameDuration;
+updateTimerDisplay();
 
-function changeTime() {
-    const newTime = document.getElementById('newTime').value;
+let player1BulletsRemaining = player1Bullets.length;
+let player1canShoot = true;
+let player1killCount = 0;
+let player2BulletsRemaining = player2Bullets.length;
+let player2canShoot = true;
+let player2killCount = 0;
 
-    let minutes = Math.floor(newTime);
-    let seconds = Math.floor((newTime - minutes) * 60);
-    let minutesDisplay = String(minutes).padStart(2, '0');
-    let secondsDisplay = String(seconds).padStart(2, '0');
-    document.getElementById('game-timer').textContent = `${minutesDisplay}:${secondsDisplay}`;
+let bestScore = 0;
+const bullet = new Bullet(singleGameContainer);
 
-    document.getElementById('timeForm').style.display = 'none';
-    gameDuration = newTime * 60 * 1000;
-    startGame();
-
-    return false;
+let ducks = [];
+for (let i = 0; i < 7; i++) {
+    createDuck();
 }
 
-document.getElementById('adjustTimeBtn').addEventListener('click', function() {
-    document.getElementById('timeForm').style.display = 'block';
-    document.getElementById('StartGame-Button').style.display = 'none';
-});
+function createDuck() {
+    const x = Math.round(Math.random()) * window.innerWidth;
+    const y = Math.random() * singleGameContainer.clientHeight;
+    const direction = x === 0 ? 'right' : 'left';
+    const duck = new Duck(ducks.length, x, y, direction, singleGameContainer);
+    ducks.push(duck);
+}
 
-const testBullet = new Bullet(testContainer);
-duck.addEventListener('click', (event) => {
-    duck.src = duckImages.dead;
-    testBullet.show(event.clientX, event.clientX);
+function updateDucks() {
+    ducks.forEach(duck => {
+        duck.updatePosition();
+    });
+    requestAnimationFrame(updateDucks);
+}
+
+function showKillNotification(imageId, soundId) {
+    const shotSound = document.getElementById('shot-sound');
+    shotSound.volume = 0.4;
+    const killImg = document.getElementById(imageId);
+    const killSound = document.getElementById(soundId);
+    killSound.currentTime = 0;
+    killSound.play();
+    killImg.style.display = 'flex';
     setTimeout(() => {
-        if (clickCount < 5) {
-            const { x, y, rotation } = corners[clickCount>3?3:clickCount];
-            duck.style.left = `${x}px`;
-            duck.style.top = `${y}px`;
-            duck.style.transform = `rotate(${rotation}deg)`;
-            clickCoordinates.push({ x: event.clientX, y: event.clientY });
-    
-            if (clickCount === 4) {
-                saveCoordinates();
-                duck.style.display = 'none';
-                startGameB = true;
-            } else {
-                clickCount++;
+        killImg.style.display = 'none';
+    }, 1500);
+}
+
+function detectHit(shotX, shotY, player) {
+    let hits = 0;
+    if (player === "player1") {
+        ducks.forEach(duck => {
+            const duckRect = duck.element.getBoundingClientRect();
+            if (shotX >= duckRect.left && shotX <= duckRect.right &&
+                shotY >= duckRect.top && shotY <= duckRect.bottom) {
+                player1killCount++;
+                hits++;
+                if(player1killCount%numberToUpdate ===0 && (player2killCount + player1killCount)<maxNumberToUpdate){
+                    createDuck();
+                }
+                duck.kill();
             }
+        });
+    }
+    if (player === "player1") {
+        ducks.forEach(duck => {
+            const duckRect = duck.element.getBoundingClientRect();
+            if (
+                shotX >= duckRect.left && shotX <= duckRect.right &&
+                shotY >= duckRect.top && shotY <= duckRect.bottom
+            ) {
+                player2killCount++;
+                hits++;
+                if(player2killCount%numberToUpdate ===0 && (player1killCount + player2killCount )<maxNumberToUpdate){
+                    createDuck();
+                }
+                duck.kill();
+            }
+        });
+    }
+    updateKillCount();
+    switch (hits) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            showKillNotification('double-kil-image', 'double-kil-sound');
+            break;
+        case 3:
+            showKillNotification('triple-kil-image', 'triple-kil-sound');
+            break;
+        case 4:
+            showKillNotification('quad-kil-image', 'quad-kil-sound');
+            break;
+        default:
+            showKillNotification('quintuple-kil-image', 'quintuple-kil-sound');
+            break;
+            
+    }
+}
+
+function regenerate(){
+    ducks.forEach(duck => {
+        duck.element.remove();
+    });
+    ducks = [];
+    for (let i = 0; i < 7; i++) {
+        createDuck();
+    }
+}
+
+function updateKillCount(thePlayer) {
+    if (thePlayer === "player1") {
+        player1killCountElement.textContent = player1killCount;
+    } else if (thePlayer === "player2") {
+        player2killCountElement.textContent = player2killCount;
+    }
+}
+
+function regenerateBullets() {
+    const shotSound = document.getElementById('reload-sound');
+    shotSound.currentTime = 0;
+    shotSound.play();
+    setTimeout(() => {
+        player1BulletsRemaining = player1Bullets.length;
+        updateBullets1();
+        player1canShoot = true;
+        player1Reload.style.visibility = 'hidden';
+    }, 2000);
+}
+
+function regenerateBullets2() {
+    const shotSound = document.getElementById('reload-sound');
+    shotSound.currentTime = 0;
+    shotSound.play();
+    setTimeout(() => {
+        player2BulletsRemaining = player2Bullets.length;
+        updateBullets2();
+        player1canShoot = true;
+        player2Reload.style.visibility = 'hidden';
+    }, 2000);
+}
+
+function updateBullets1() {
+    player1Bullets.forEach((bullet, index) => {
+        bullet.style.visibility = index < player1BulletsRemaining ? 'visible' : 'hidden';
+    });
+}
+
+function updateBullets2() {
+    player2Bullets.forEach((bullet, index) => {
+        bullet.style.visibility = index < player2BulletsRemaining ? 'visible' : 'hidden';
+    });
+}
+
+function shoot(x, y , player) {
+    if (player1canShoot && player1BulletsRemaining > 0 && player == "player1") {
+        bullet.show(x, y);
+        detectHit(x, y , player);
+        player1BulletsRemaining--;
+        updateBullets1();
+        if (player1BulletsRemaining === 0) {
+            player1Reload.style.visibility = 'visible';
+            player1canShoot = false;
+            regenerateBullets1();
         }
-        duck.src = duckImages.alive;
-    }, 600);
-});
+    }
+    if (player2canShoot && player2BulletsRemaining > 0 && player == "player2") {
+        bullet.show(x, y);
+        detectHit(x, y, player);
+        player2BulletsRemaining--;
+        updateBullets2();
+        if (player2BulletsRemaining === 0) {
+            player2Reload.style.visibility = 'visible';
+            player2canShoot = false;
+            regenerateBullets2();
+        }
+    }
+}
 
-let clickCount = 1;
-const clickCoordinates = [];
-let startGameB = false;
+function startGameTimer() {
+    const endTime = Date.now() + gameDuration;
+    gameTimer = setInterval(() => {
+        const now = Date.now();
+        timeRemaining = endTime - now;
+        if (timeRemaining <= 0) {
+            clearInterval(gameTimer);
+            endGame();
+        } else {
+            updateTimerDisplay();
+        }
+    }, 500);
+}
 
-const corners = [
-    { x: -40, y: -40, rotation: 135 },
-    { x: window.innerWidth + 40 - duck.width, y: -40, rotation: -135 },
-    { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
-    { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
-];
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeRemaining / 60000);
+    const seconds = Math.floor((timeRemaining % 60000) / 1000);
+    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
 
-function saveCoordinates() {
-    fetch('http://localhost:5000/save_coordinates', {
+function endGame() {
+    gameContainer.style.display = 'none';
+    resultContainer.style.display = 'flex';
+    const endSound = document.getElementById('end-sound');
+    endSound.currentTime = 0;
+    endSound.play();
+    finalScoreElement.textContent = `Your score: ${killCount}`;
+    finalTopScoreElement.textContent = `Top score: ${bestScore > killCount ? bestScore : killCount}`;
+}
+
+function sendToLeaderBoard() {
+    const SB = document.getElementById("IEEE-SB").value;
+    const userName = document.getElementById("name").value;
+    const theMessage = document.getElementById("message").value;
+    const theScore = killCount;
+
+    fetch('http://localhost:5000/submit-score', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ coordinates: clickCoordinates })
+        body: JSON.stringify({ SB, userName, theMessage, theScore }),
     })
-    .then(response => response.json())
+    .then(response => response.text())
     .then(data => {
-        if (data.status === 'success') {
-            console.log('Coordinates saved successfully');
-        } else {
-            console.error('Error saving coordinates:', data.message);
-        }
+        console.log(data);
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
 
-function startGame() {
-    if(startGameB){
+function displayBestScore() {
+    fetch('http://localhost:5000/leaderboard')
+        .then(response => response.json())
+        .then(data => {
+            bestScore = data.bestScore;
+            document.getElementById('top-score').textContent = `Best score : ${bestScore}`
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+let player1 = setInterval(() => {
+    let player1_x = Math.random() * singleGameContainer.clientWidth;
+    let player1_y = Math.random() * singleGameContainer.clientHeight;
+    shoot(player1_x, player1_y, "player1")
+}, 500);
+
+let player2 = setInterval(() => {
+    let player2_x = Math.random() * singleGameContainer.clientWidth;
+    let player2_y = Math.random() * singleGameContainer.clientHeight;
+    shoot(player2_x, player2_y, "player2")
+}, 700);
+
+updateDucks();
+
+function deb() {
     testContainer.style.display = 'none';
     gameContainer.style.display = 'flex';
     document.getElementById('result').style.display = 'none';
-    const startSound = document.getElementById('start-sound');
-    startSound.currentTime = 0;
-    startSound.play();
-    regenerate();
-    displayBestScore()
-    }
-    else{
-        alert('Please shoot the duck to adjust positioning');
-    }
 }

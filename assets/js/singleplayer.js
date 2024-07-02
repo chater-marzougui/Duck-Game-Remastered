@@ -25,6 +25,11 @@ let killCount = 0;
 let bestScore = 0;
 const bullet = new Bullet(singleGameContainer);
 
+
+let ducks = [];
+for (let i = 0; i < 7; i++) {
+    createDuck();
+}
 function createDuck() {
     const x = Math.round(Math.random()) * window.innerWidth;
     const y = Math.random() * singleGameContainer.clientHeight;
@@ -198,11 +203,6 @@ function displayBestScore() {
             document.getElementById('top-score').textContent = `Best score : ${bestScore}`
         })
         .catch(error => console.error('Error:', error));
-}
-
-let ducks = [];
-for (let i = 0; i < 7; i++) {
-    createDuck();
 }
 
 clickSpace.addEventListener( 'click' , (event) => {

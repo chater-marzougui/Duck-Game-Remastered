@@ -21,9 +21,8 @@ def save_coordinates():
         return jsonify({"status": "error", "message": "No coordinates provided"}), 400
     
     try:
-        file_path = os.path.join('coordinates.txt')
-        #with open(file_path, 'w') as file:
-        #    file.write(str(coordinates))
+        print("Saving coordinates", coordinates)
+        print(len(coordinates))
         return jsonify({"status": "success", "message": "Coordinates saved successfully"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500

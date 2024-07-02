@@ -27,28 +27,66 @@
     <div id="multi-game-container">
         <img class="foreground" src="./assets/images/foreground.png" alt="grass">
         <img class="reload" src="./assets/images/reload.png" alt="arrows">
+        <div id="click-space"></div>
         <div class="scoreBoard">
+            <div class="kills">
+                <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
+                <h2 id="player1-kill-count">0</h2>
+            </div>
             <div class="timer">
                 <h1 id="game-timer">02:00</h1>
+                <h1 id="top-score">0</h1>
             </div>
-            <div class="score">
-                <h2 id="score">Score: 0</h2>
+            <div class="kills">
+                <img class="score-duck" src="./assets/images/scoreduck.png" alt="duck">
+                <h2 id="player1-kill-count">0</h2>
             </div>
         </div>
+        <div class="bullets">
+            <div>
+                <img class="bullet1" src="./assets/images/bullet2.png" alt="bullet">
+                <img class="bullet1" src="./assets/images/bullet2.png" alt="bullet">
+                <img class="bullet1" src="./assets/images/bullet2.png" alt="bullet">
+                <img class="bullet1" src="./assets/images/bullet2.png" alt="bullet">
+                <img class="bullet1" src="./assets/images/bullet2.png" alt="bullet">
+            </div>
+            <div>
+                <img class="bullet2" src="./assets/images/bullet3.png" alt="bullet">
+                <img class="bullet2" src="./assets/images/bullet3.png" alt="bullet">
+                <img class="bullet2" src="./assets/images/bullet3.png" alt="bullet">
+                <img class="bullet2" src="./assets/images/bullet3.png" alt="bullet">
+                <img class="bullet2" src="./assets/images/bullet3.png" alt="bullet">
+            </div>
+        </div>
+        <audio id="reload-sound" src="./assets/sound/reload.m4a"></audio>
+        <audio id="end-sound" src="./assets/sound/end.wav"></audio>
+
+        <img class="kill-image" id="double-kil-image" src="./assets/images/doublekill.gif" alt="double kill">
+        <audio id="double-kil-sound" src="./assets/sound/doublekill.m4a"></audio>
+        
+        <img class="kill-image" id="triple-kil-image" src="./assets/images/triplekill.gif" alt="triple kill">
+        <audio id="triple-kil-sound" src="./assets/sound/triplekill.m4a"></audio>
+        
+        <img class="kill-image" id="quad-kil-image" src="./assets/images/MegaKill.gif" alt="quad kill">
+        <audio id="quad-kil-sound" src="./assets/sound/quadra.m4a"></audio>
+        
+        <img class="kill-image" id="quintuple-kil-image" src="./assets/images/quitkill.png" alt="quintuple kill">
+        <audio id="quintuple-kil-sound" src="./assets/sound/holy.m4a"></audio>
         <div id="duckContainer">
             <!-- Ducks will be dynamically generated here -->
         </div>
-        <div id="bulletContainer">
-            <!-- Bullets will be dynamically generated here -->
-        </div>
+    </div>
+    <div id="result" style="display: none;">
         <div id="game-over">
             <h1>Game Over</h1>
             <h2 id="final-score">Your score: 0</h2>
+        </div>
     </div>
 
 
     <audio id="shot-sound" src="./assets/sound/shot.m4a"></audio>
     <script src="./assets/js/classes.js"></script>
+    <script src="./assets/js/multiplayertest.js"></script>
     <script src="./assets/js/multiplayer.js"></script>
 </body>
 </html>
