@@ -126,6 +126,7 @@ function removeDucks(){
     ducks.forEach(duck => {
         duck.element.remove();
     });
+    ducks = [];
 }
 
 function updateKillCount() {

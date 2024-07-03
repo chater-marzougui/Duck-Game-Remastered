@@ -163,9 +163,17 @@ function updateTimerDisplay() {
     timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
+function removeDucks(){
+    ducks.forEach(duck => {
+        duck.element.remove();
+    });
+    ducks = [];
+}
+
 function endGame() {
     gameContainer.style.display = 'none';
     resultContainer.style.display = 'flex';
+    removeDucks();
     const endSound = document.getElementById('end-sound');
     endSound.currentTime = 0;
     endSound.play();
