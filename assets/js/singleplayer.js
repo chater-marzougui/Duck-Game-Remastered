@@ -32,8 +32,9 @@ for (let i = 0; i < 7; i++) {
 }
 function createDuck() {
     const x = Math.round(Math.random()) * window.innerWidth;
-    const y = Math.random() * singleGameContainer.clientHeight;
-    const direction = x === 0 ? 'right' : 'left';
+    const yCalc = Math.random() * singleGameContainer.clientHeight - 140;
+    const y = yCalc > 0 ? yCalc : yCalc + 140;
+    const direction = Math.round(Math.random()) === 0 ? 'left' : 'right';
     const duck = new Duck(ducks.length, x, y, direction, singleGameContainer);
     ducks.push(duck);
 }

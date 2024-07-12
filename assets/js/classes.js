@@ -24,7 +24,7 @@ class Duck {
         this.element.style.left = `${this.x}px`;
         this.element.style.top = `${this.y}px`;
         this.element.style.transition = 'left 0.1s linear, top 0.1s linear';
-        if (this.direction === 'right') {
+        if (this.direction === 'left') {
             this.element.style.transform = 'rotateY(180deg)';
         }
         container.appendChild(this.element);
