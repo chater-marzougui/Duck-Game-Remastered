@@ -74,7 +74,7 @@ function startGame() {
     startSound.play();
     initializeDucks();
     startGameTimer();
-    startKilling();
+    //startKilling();
     }
     else{
         alert('Please shoot the duck to adjust positioning');

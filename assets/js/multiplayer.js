@@ -284,7 +284,13 @@ function stopKilling() {
 updateDucks();
 
 function deb() {
-    testContainer.style.display = 'none';
-    gameContainer.style.display = 'none';
-    document.getElementById('result').style.display = 'flex';
+    socket.emit ('tracking_data', "fOFF")
 }
+
+socket.on('tracking_data', (data)=>{
+    console.log("data ffb");
+    /*const { x, y, player_id, should_shoot } = data;
+    if (should_shoot) {
+        shoot(x, y, player_id);
+    console.log(`Shot fired by ${player_id} at (${x}, ${y})`);*/
+});
