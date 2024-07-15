@@ -55,7 +55,8 @@ function startGame() {
         timeRemaining = gameDuration;
         updateTimerDisplay();
         regenerate();
-        displayBestScore()
+        displayBestScore();
+        socket.emit('tracking_data' , true);
     }
     else{
         alert('Please shoot the duck to adjust positioning');

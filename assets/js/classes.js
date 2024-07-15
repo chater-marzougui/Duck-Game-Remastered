@@ -123,4 +123,4 @@ socket.on('disconnect', () => {
     console.log('Disconnected from WebSocket server');
 });
 
-
+socket.emit('tracking_data', true)

@@ -219,4 +219,10 @@ clickSpace.addEventListener( 'click' , (event) => {
     shoot(event.clientX, event.clientY);
 });
 
+socket.on('position', (data) => {
+    if (data.should_shoot) {
+        shoot(data.x, data.y);
+    }
+});
+
 updateDucks();

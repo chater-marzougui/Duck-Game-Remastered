@@ -219,13 +219,14 @@ function updateTimerDisplay() {
 function endGame() {
     gameContainer.style.display = 'none';
     removeDucks();
-    stopKilling();
+    //stopKilling();
     resultContainer.style.display = 'flex';
     const endSound = document.getElementById('end-sound');
     endSound.currentTime = 0;
     endSound.play();
     finalScorePlayer1.textContent = `Your score: ${player1killCount}`;
     finalScorePlayer2.textContent = `Your score: ${player2killCount}`;
+    socket.emit('tracking_data', false)
 }
 
 function sendToLeaderBoard() {
@@ -281,16 +282,10 @@ function stopKilling() {
     clearInterval(player2Interval);
 }
 
-updateDucks();
-
-function deb() {
-    socket.emit ('tracking_data', "fOFF")
-}
-
-socket.on('tracking_data', (data)=>{
-    console.log("data ffb");
-    /*const { x, y, player_id, should_shoot } = data;
-    if (should_shoot) {
-        shoot(x, y, player_id);
-    console.log(`Shot fired by ${player_id} at (${x}, ${y})`);*/
+socket.on('position', (data) => {
+    if (data.should_shoot) {
+        shoot(data.x, data.y, data.player_id);
+    }
 });
+
+updateDucks();
