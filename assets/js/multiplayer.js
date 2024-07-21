@@ -173,7 +173,7 @@ function updateBullets2() {
 
 function shoot(x, y , player) {
     if (player1canShoot && player1BulletsRemaining > 0 && player == "player1") {
-        bullet1.show(x, y);
+        bullet1.show(x, y, true);
         detectHit(x, y , "player1");
         player1BulletsRemaining--;
         updateBullets1();
@@ -184,7 +184,7 @@ function shoot(x, y , player) {
         }
     }
     if (player2canShoot && player2BulletsRemaining > 0 && player == "player2") {
-        bullet2.show(x, y);
+        bullet2.show(x, y, true);
         detectHit(x, y, "player2");
         player2BulletsRemaining--;
         updateBullets2();
@@ -283,8 +283,15 @@ function stopKilling() {
 }
 
 socket.on('position', (data) => {
+    console.log(data);
     if (data.should_shoot) {
         shoot(data.x, data.y, data.player_id);
+    }
+    else if (data.player_id === "player1") {
+        bullet1.show(data.x, data.y);
+    }
+    else if (data.player_id === "player2") {
+        bullet2.show(data.x, data.y);
     }
 });
 

@@ -20,17 +20,43 @@ if not os.path.exists(leaderboard_file):
         json.dump({"bestScore": 1, "entries": []}, file)
 
 
+
+
+@app.route('/shoot', methods=['GET'])
+def shoot():
+    global player1CanShoot, player2CanShoot
+    player = request.args.get('player')
+    shoot = request.args.get('shoot')
+
+    if player and shoot:
+        if player == 'player1':
+            player1CanShoot = True
+        elif player == 'player2':
+            player2CanShoot = True
+        return "Shoot event received", 200
+    else:
+        return "Invalid request", 400
+
 @app.route('/save_coordinates', methods=['POST'])
 def save_coordinates():
     data = request.json
+    global width_ratio, height_ratio
     coordinates = data.get('coordinates')
-
+    ret, frame = cap.read()
     if not coordinates:
         return jsonify({"status": "error", "message": "No coordinates provided"}), 400
+    if ret:
+        height , width = frame.shape[:2]
+        x = 0
+        y = 0
+        for i in coordinates:
+            if i['x']>x: x = i['x']
+            if i['y']>y: y = i['y']
+        width_ratio = x / width
+        height_ratio = y / height
 
     try:
         print("Saving coordinates", coordinates)
-        print(len(coordinates))
         return jsonify({"status": "success", "message": "Coordinates saved successfully"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -85,13 +111,34 @@ def handle_disconnect():
 cap = cv2.VideoCapture(0)
 
 # Shared variables
+width_ratio = 1.0
+height_ratio = 1.0
 detect_markers = False
 skip_frame = 0
+player1CanShoot = False
+player2CanShoot = False
+aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
+aruco_params = cv2.aruco.DetectorParameters()
+
+
+def send_detected(corners, ids, width):
+    global player1CanShoot, player2CanShoot, width_ratio, height_ratio
+    for i, marker_id in enumerate(ids):
+        corner = corners[i][0]
+        center = tuple(np.mean(corner, axis=0).astype(int))
+        if marker_id[0] == 12:
+            player_id = "player1"
+            data = {'x': int((width - center[0])* width_ratio), 'y': int(center[1] * height_ratio), 'player_id': player_id, 'should_shoot': player1CanShoot}
+            player1CanShoot = False
+        elif marker_id[0] == 33:
+            player_id = "player2"
+            data = {'x': int(width - center[0]), 'y': int(center[1]), 'player_id': player_id, 'should_shoot': player2CanShoot}
+            player2CanShoot = False
+        if data:
+            socketio.emit('position', data)
 
 def camera_thread():
-    global detect_markers, skip_frame
-    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
-    aruco_params = cv2.aruco.DetectorParameters()
+    global detect_markers, skip_frame, aruco_dict, aruco_params
     while True:
         if detect_markers:
             ret, frame = cap.read()
@@ -99,34 +146,20 @@ def camera_thread():
                 continue
 
             skip_frame += 1
-            if skip_frame % 5 != 0:
-                if skip_frame == 100:
-                    skip_frame = 0
+            if skip_frame % 2:
                 continue
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             corners, ids, _ = cv2.aruco.ArucoDetector(aruco_dict, detectorParams=aruco_params).detectMarkers(gray)
 
             if ids is not None:
-                for i, marker_id in enumerate(ids):
-                    corner = corners[i][0]
-                    center = tuple(np.mean(corner, axis=0).astype(int))
-
-                    if marker_id[0] == 12:  # Player 1
-                        player_id = "player1"
-                    elif marker_id[0] == 33:  # Player 2
-                        player_id = "player2"
-                    else:
-                        continue
-                    _ , width = frame.shape[:2]
-                    data = {'x': int(width - center[0]), 'y': int(center[1]), 'player_id': player_id, 'should_shoot': True}
-                    socketio.emit('position', data)
-                    time.sleep(0.1)
-
+                send_detected(corners, ids, frame.shape[1])
+            
+            time.sleep(0.02)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        time.sleep(0.02)
+        time.sleep(0.08)
 
 thread = threading.Thread(target=camera_thread)
 thread.start()
@@ -141,4 +174,5 @@ if __name__ == '__main__':
         socketio.run(app, debug=True, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
     finally:
         cap.release()
+        #thread.join()
         cv2.destroyAllWindows()
