@@ -12,7 +12,6 @@ const finalScorePlayer1 = document.getElementById('player1-score');
 const finalScorePlayer2 = document.getElementById('player2-score');
 const clickSpace = document.getElementById('click-space');
 
-let gameDuration = 2 * 60 * 1000;
 let numberToUpdate = 9;
 let maxNumberToUpdate = 250;
 

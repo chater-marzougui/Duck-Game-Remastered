@@ -3,7 +3,7 @@ const gameContainer = document.getElementById('multi-game-container');
 gameContainer.style.display = 'none';
 const testContainer = document.getElementById('single-container');
 
-
+let gameDuration = 2 * 60 * 1000;
 const duckImages = {
     alive: 'assets/images/alive-duck.png',
     dead: 'assets/images/dead-duck.png'
