@@ -31,6 +31,7 @@ document.getElementById('adjustTimeBtn').addEventListener('click', function() {
 });
 
 const testBullet = new Bullet(testContainer);
+const testBullet2 = new Bullet(testContainer, false);
 
 let clickCount = 1;
 const clickCoordinates = [];
@@ -43,13 +44,20 @@ const corners = [
     { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
 ];
 
+const shootCorners = [
+    {x : 0, y : 0},
+    {x: window.innerWidth, y: 0},
+    {x: window.innerWidth, y: window.innerHeight},
+    {x: 0, y: window.innerHeight}
+]
+
 function saveCoordinates() {
     fetch('http://localhost:5000/save_coordinates', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ coordinates: clickCoordinates })
+        body: JSON.stringify({ game: "start"})
     })
     .then(response => response.json())
     .then(data => {
@@ -82,9 +90,10 @@ function startGame() {
     }
 }
 
+/*
 duck.addEventListener('click', (event) => {
     duck.src = duckImages.dead;
-    testBullet.show(event.clientX, event.clientX);
+    testBullet.show(event.clientX, event.clientY);
     setTimeout(() => {
         const { x, y, rotation } = corners[clickCount%4];
         duck.style.left = `${x}px`;
@@ -102,3 +111,27 @@ duck.addEventListener('click', (event) => {
         duck.src = duckImages.alive;
     }, 600);
 });
+*/
+
+socket.on('adjustment_shot', (data) => {
+    duck.src = duckImages.dead;
+    let x = shootCorners[clickCount -1].x;
+    let y = shootCorners[clickCount -1].y;
+    clickCount <= 4 ? testBullet.show(x , y , true) : testBullet2.show(x , y , true);
+    setTimeout(() => {
+        const { x, y, rotation } = corners[clickCount%4];
+        duck.style.left = `${x}px`;
+        duck.style.top = `${y}px`;
+        duck.style.transform = `rotate(${rotation}deg)`;
+        if (clickCount === 8) {
+            saveCoordinates();
+            duck.style.display = 'none';
+            startGameB = true;
+        } else {
+            clickCount++;
+        }
+        duck.src = duckImages.alive;
+    }, 600);
+});
+
+socket.emit('adjust-shooting', {type: "MultiPlayer", height: window.innerHeight, width: window.innerWidth});

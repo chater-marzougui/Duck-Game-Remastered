@@ -51,8 +51,10 @@ function createDuck() {
 
 function updateDucks() {
     ducks.forEach(duck => {
-        duck.updatePosition();
-    });
+        if (duck.alive){
+            duck.updatePosition();
+        } 
+   });
     requestAnimationFrame(updateDucks);
 }
 
