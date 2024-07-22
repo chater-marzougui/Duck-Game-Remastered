@@ -45,7 +45,7 @@ while True:
             print("Marker position:", center)
 
     # Display the resulting frame
-    cv2.imshow('frame', frame)
+    #cv2.imshow('frame', frame)
 
     # Break the loop on 'q' key press
     if cv2.waitKey(1) & 0xFF == ord('q'):
