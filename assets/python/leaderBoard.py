@@ -34,21 +34,14 @@ def handle_tracking_data(data):
     detect_markers = data
 
 @app.route('/save_coordinates', methods=['POST'])
-def save_coordinates():
-    data = request.json
-    coordinates = data.get('coordinates')
+def save_coordinates(data):
     ret, _ = cap.read()
-    if not coordinates:
+    if data != "start":
         return jsonify({"status": "error", "message": "No coordinates provided"}), 400
     if ret:
-        x = 0
-        y = 0
-        for i in coordinates:
-            if i['x']>x: x = i['x']
-            if i['y']>y: y = i['y']
+        print("Saved")
 
     try:
-        print("Saving coordinates", coordinates)
         return jsonify({"status": "success", "message": "Coordinates saved successfully"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -138,7 +131,7 @@ def detect_position(player):
         
     ret, frame = cap.read()
     if not ret:
-        return (None, None)
+        return None
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     corners, ids, _ = cv2.aruco.ArucoDetector(aruco_dict, detectorParams=aruco_params).detectMarkers(gray)
@@ -147,12 +140,8 @@ def detect_position(player):
         for i, marker_id in enumerate(ids):
             corner = corners[i][0]
             center = tuple(np.mean(corner, axis=0).astype(int))
-            if marker_id[0] == 12 and player1CanShoot:
+            if (marker_id[0] == 12 and player1CanShoot) or (marker_id[0] == 33 and player2CanShoot):
                 return (width - center[0], center[1])
-            elif marker_id[0] == 33 and player2CanShoot:
-                return (width - center[0], center[1])
-            else:
-                continue
 
 def adjust_player_box(arr : list[tuple], player):
     global player1Positioning, player2Positioning
@@ -212,22 +201,22 @@ def adjust_multi_player():
     global width_ratio, height_ratio, player1CanShoot, player2CanShoot
     arr1 = []
     arr2 = []
-    k = 0
-    while k != 3:
-        while not player1CanShoot: continue
+    while len(arr1) != 4:
+        while not player1CanShoot: time.sleep(0.02)
         pos = detect_position('player1')
         player1CanShoot = False
         if pos:
+            socketio.emit('adjustment_shot', 'player1')
             arr1.append(pos)
-            k+=1
-    k = 0
-    while k != 3:
-        while not player2CanShoot: continue
+    while len(arr2) != 4:
+        while not player2CanShoot: time.sleep(0.02)
         pos = detect_position('player2')
         player2CanShoot = False
         if pos:
+            socketio.emit('adjustment_shot', 'player2')
             arr2.append(pos)
-            k+=1
+    
+    print("adjusting...")
     adjust_player_box(arr1, 'player1')
     adjust_player_box(arr2, 'player2')
 
@@ -256,6 +245,7 @@ def adjust_shooting(data):
     height_ratio = innerHeight / height
     
     if data.get('type') == "MultiPlayer":
+        print("adjusting multi player")
         adjust_multi_player()
     elif data.get('type') == 'SinglePlayer':
         adjust_single_player()

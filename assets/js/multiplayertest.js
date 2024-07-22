@@ -83,7 +83,6 @@ function startGame() {
         initializeDucks();
         startGameTimer();
         socket.emit('tracking_data', true)
-        //startKilling();
     }
     else{
         alert('Please shoot the duck to adjust positioning');
@@ -115,8 +114,8 @@ duck.addEventListener('click', (event) => {
 
 socket.on('adjustment_shot', (data) => {
     duck.src = duckImages.dead;
-    let x = shootCorners[clickCount -1].x;
-    let y = shootCorners[clickCount -1].y;
+    let x = shootCorners[(clickCount -1)%4].x;
+    let y = shootCorners[(clickCount -1)%4].y;
     clickCount <= 4 ? testBullet.show(x , y , true) : testBullet2.show(x , y , true);
     setTimeout(() => {
         const { x, y, rotation } = corners[clickCount%4];
