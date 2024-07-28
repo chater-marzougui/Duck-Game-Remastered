@@ -10,6 +10,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Shared variables
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 thread = threading.Thread()
 width_ratio = 1.0
 height_ratio = 1.0
@@ -34,10 +36,12 @@ def handle_tracking_data(data):
     detect_markers = data
 
 @app.route('/save_coordinates', methods=['POST'])
-def save_coordinates(data):
-    ret, _ = cap.read()
-    if data != "start":
+def save_coordinates():
+    data = request.get_json()
+    if not data or data.get('game') != "start":
         return jsonify({"status": "error", "message": "No coordinates provided"}), 400
+
+    ret, _ = cap.read()
     if ret:
         print("Saved")
 
@@ -117,9 +121,9 @@ def final_point(center: tuple, player, width):
         x1, y1= player2Positioning[0]
         x2, y2= player2Positioning[1]
     
-    x_point = xi - x1 / x2 - x1
-    y_point = yi - y1 / y2 - y1
-    return int(x_point * height_ratio) , int (y_point * width_ratio) 
+    x_point = (xi - x1) / (x2 - x1)
+    y_point = (yi - y1) / (y2 - y1)
+    return int(x_point * width_ratio) , int (y_point * height_ratio) 
     
 
 def detect_position(player):
@@ -155,8 +159,11 @@ def adjust_player_box(arr : list[tuple], player):
         if y > y2 : y2 = y
     if player == 'player1':
         player1Positioning = [(x1, y1), (x2, y2)]
+        print("box positioning of player 1 " ,player1Positioning)
     else :
-        player2Positioning = [(x1, y1), (x2, y2)]        
+        player2Positioning = [(x1, y1), (x2, y2)]
+        print("box positioning of player 2 " ,player2Positioning)
+         
 
 def camera_thread():
     global detect_markers, skip_frame, aruco_dict, aruco_params
@@ -166,9 +173,9 @@ def camera_thread():
             if not ret:
                 continue
 
-            skip_frame += 1
-            if skip_frame % 2:
-                continue
+            # skip_frame += 1
+            # if skip_frame % 2:
+            #     continue
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             corners, ids, _ = cv2.aruco.ArucoDetector(aruco_dict, detectorParams=aruco_params).detectMarkers(gray)
@@ -176,11 +183,11 @@ def camera_thread():
             if ids is not None:
                 send_detected(corners, ids, frame.shape[1])
             
-            time.sleep(0.02)
+            time.sleep(0.01)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        time.sleep(0.08)
+        time.sleep(0.02)
 
 @app.route('/shoot', methods=['GET'])
 def shoot():
@@ -202,20 +209,22 @@ def adjust_multi_player():
     arr1 = []
     arr2 = []
     while len(arr1) != 4:
-        while not player1CanShoot: time.sleep(0.02)
+        while not player1CanShoot: time.sleep(0.01)
         pos = detect_position('player1')
         player1CanShoot = False
         if pos:
             socketio.emit('adjustment_shot', 'player1')
+            print(pos)
             arr1.append(pos)
     while len(arr2) != 4:
-        while not player2CanShoot: time.sleep(0.02)
+        while not player2CanShoot: time.sleep(0.01)
         pos = detect_position('player2')
         player2CanShoot = False
         if pos:
+            print(pos)
             socketio.emit('adjustment_shot', 'player2')
             arr2.append(pos)
-    
+    print(arr2)
     print("adjusting...")
     adjust_player_box(arr1, 'player1')
     adjust_player_box(arr2, 'player2')
@@ -241,9 +250,11 @@ def adjust_shooting(data):
     _, frame = cap.read()
     height, width = frame.shape[0:2]
     innerHeight, innerWidth = data.get("height"), data.get("width")
-    width_ratio = innerWidth / width
-    height_ratio = innerHeight / height
-    
+    width_ratio = innerWidth
+    height_ratio = innerHeight
+    print("Pc Width:",width, "Pc Height:", height)
+    print("Inner Width:", innerWidth, "Inner Height:", innerHeight)
+    print("Width Ratio:", width_ratio, "Height Ratio:", height_ratio)
     if data.get('type') == "MultiPlayer":
         print("adjusting multi player")
         adjust_multi_player()

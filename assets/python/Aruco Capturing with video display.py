@@ -18,6 +18,7 @@ while True:
     frame_counter += 1
     # Capture frame-by-frame
     ret, frame = cap.read()
+    
     if not ret:
         break
 
@@ -25,27 +26,29 @@ while True:
         if frame_counter == 100:
             frame_counter = 0
         continue
+    
     # Convert to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Detect ArUco markers
     corners, ids, rejected = cv2.aruco.ArucoDetector(aruco_dict, detectorParams=aruco_params).detectMarkers(gray)
-
+    frame = cv2.flip(frame, 1)
+    width = frame.shape[1]
     # If markers are detected
     if ids is not None:
         # Draw the detected markers
-        cv2.aruco.drawDetectedMarkers(frame, corners, ids)
+        #cv2.aruco.drawDetectedMarkers(frame, corners, ids)
 
         # Extract the position of the marker
         for corner in corners:
             # Calculate the center of the marker
             center = tuple(np.mean(corner[0], axis=0).astype(int))
             # Draw the center on the frame
-            cv2.circle(frame, center, 5, (0, 255, 0), -1)
+            cv2.circle(frame, (width - center[0], center[1]), 5, (0, 255, 0), -1)
             print("Marker position:", center)
 
     # Display the resulting frame
-    #cv2.imshow('frame', frame)
+    cv2.imshow('frame', frame)
 
     # Break the loop on 'q' key press
     if cv2.waitKey(1) & 0xFF == ord('q'):

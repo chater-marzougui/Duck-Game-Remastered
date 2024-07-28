@@ -57,7 +57,7 @@ function saveCoordinates() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ game: "start"})
+        body: JSON.stringify({ game: "start" })
     })
     .then(response => response.json())
     .then(data => {

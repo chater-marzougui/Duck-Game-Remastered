@@ -87,34 +87,37 @@ class Bullet {
         this.container = container;
         this.useShot1 = useShot1;
         this.element = document.createElement('img');
+        this.isShot = false;
         this.element.src = useShot1 ? 'assets/images/shot1.png' : 'assets/images/shot2.png';
         this.element.style.position = 'absolute';
         this.element.style.display = 'none';
         this.element.style.width = '50px';
-        this.element.style.transition = 'opacity 0.5s ease';
+        this.element.style.transition = 'left 0.2s ease, top 0.2s ease, opacity 0.5s ease';
         container.appendChild(this.element);
         this.resetTimeout = null;
     }
 
     show(x, y, shoot = false) {
+        if(!this.isShot){
         clearTimeout(this.resetTimeout);
         this.element.style.left = `${x - 25}px`;
         this.element.style.top = `${y - 25}px`;
         this.element.style.display = 'block';
         this.element.style.opacity = '1';
+        }
         if (shoot) {
+            this.isShot = true;
             this.element.src = this.useShot1 ? 'assets/images/shot1Hole.png' : 'assets/images/shot2Hole.png';
             const shotSound = document.getElementById('shot-sound');
             shotSound.currentTime = 0;
             shotSound.play();
             setTimeout(() => {
                 this.element.style.opacity = '0';
-                setTimeout(() => {
-                    this.element.style.display = 'none';
-                }, 500);
-            }, 500);
+                this.isShot = false;
+            }, 600);
             this.element.src = this.useShot1 ? 'assets/images/shot1.png' : 'assets/images/shot2.png';
         }
+
         setTimeout(() => {
             this.element.style.opacity = '0';
         }, 1000);

@@ -7,6 +7,7 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -23,18 +24,38 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 20px;
         }
         .shoot-button:hover {
             background-color: #0056b3;
         }
+        .player-switch {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .player-switch label {
+            margin: 0 10px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <button class="shoot-button" onclick="shoot('player2')">Shoot</button>
+    <div class="player-switch">
+        <label for="player1">
+            <input type="radio" id="player1" name="player" value="1" checked> Player 1
+        </label>
+        <label for="player2">
+            <input type="radio" id="player2" name="player" value="2"> Player 2
+        </label>
+    </div>
+    <button class="shoot-button" onclick="shoot()">Shoot</button>
 
     <script>
-        function shoot(player) {
-            const url = `http://192.168.1.185:5000/shoot?player=${player}&shoot=true`;
+        function shoot() {
+            const player = document.querySelector('input[name="player"]:checked').value;
+            const url = `http://192.168.234.167:5000/shoot?player=player${player}&shoot=true`;
 
             fetch(url)
                 .then(response => {
