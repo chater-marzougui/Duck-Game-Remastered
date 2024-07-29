@@ -13,8 +13,6 @@ cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 thread = threading.Thread()
-width_ratio = 1.0
-height_ratio = 1.0
 detect_markers = False
 skip_frame = 0
 player1CanShoot = False
@@ -94,10 +92,11 @@ def handle_disconnect():
     print('Client disconnected')
 
 def send_detected(corners, ids, width):
-    global player1CanShoot, player2CanShoot, width_ratio, height_ratio
+    global player1CanShoot, player2CanShoot
     for i, marker_id in enumerate(ids):
         corner = corners[i][0]
         center = tuple(np.mean(corner, axis=0).astype(int))
+        data = None
         if marker_id[0] == 12:
             player_id = "player1"
             x , y = final_point(center, player_id, width)
@@ -112,7 +111,7 @@ def send_detected(corners, ids, width):
             socketio.emit('position', data)
 
 def final_point(center: tuple, player, width):
-    global player1Positioning, player2Positioning, width_ratio, height_ratio
+    global player1Positioning, player2Positioning
     xi, yi = width - center[0], center[1]
     if player == "player1":
         x1, y1= player1Positioning[0]
@@ -121,9 +120,9 @@ def final_point(center: tuple, player, width):
         x1, y1= player2Positioning[0]
         x2, y2= player2Positioning[1]
     
-    x_point = (xi - x1) / (x2 - x1)
-    y_point = (yi - y1) / (y2 - y1)
-    return int(x_point * width_ratio) , int (y_point * height_ratio) 
+    x_point = round((xi - x1) / (x2 - x1), 6)
+    y_point = round((yi - y1) / (y2 - y1), 6)
+    return x_point , y_point 
     
 
 def detect_position(player):
@@ -205,7 +204,7 @@ def shoot():
         return "Invalid request", 400
 
 def adjust_multi_player():
-    global width_ratio, height_ratio, player1CanShoot, player2CanShoot
+    global player1CanShoot, player2CanShoot
     arr1 = []
     arr2 = []
     while len(arr1) != 4:
@@ -230,7 +229,7 @@ def adjust_multi_player():
     adjust_player_box(arr2, 'player2')
 
 def adjust_single_player():
-    global width_ratio, height_ratio, player1CanShoot, player2CanShoot
+    global player1CanShoot, player2CanShoot
     arr1 = []
     k = 0
     while k != 3:
@@ -246,15 +245,7 @@ def adjust_single_player():
 
 @socketio.on('adjust-shooting')
 def adjust_shooting(data):
-    global width_ratio, height_ratio, player1CanShoot, player2CanShoot
-    _, frame = cap.read()
-    height, width = frame.shape[0:2]
-    innerHeight, innerWidth = data.get("height"), data.get("width")
-    width_ratio = innerWidth
-    height_ratio = innerHeight
-    print("Pc Width:",width, "Pc Height:", height)
-    print("Inner Width:", innerWidth, "Inner Height:", innerHeight)
-    print("Width Ratio:", width_ratio, "Height Ratio:", height_ratio)
+    global player1CanShoot, player2CanShoot
     if data.get('type') == "MultiPlayer":
         print("adjusting multi player")
         adjust_multi_player()

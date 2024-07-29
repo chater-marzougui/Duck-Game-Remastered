@@ -285,14 +285,16 @@ function stopKilling() {
 
 socket.on('position', (data) => {
     console.log(data);
+    let x = parseInt(data.x * singleGameContainer.clientWidth);
+    let y = parseInt(data.y * singleGameContainer.clientHeight);
     if (data.should_shoot) {
-        shoot(data.x, data.y, data.player_id);
+        shoot(x, y, data.player_id);
     }
     else if (data.player_id === "player1") {
-        bullet1.show(data.x, data.y);
+        bullet1.show(x, y);
     }
     else if (data.player_id === "player2") {
-        bullet2.show(data.x, data.y);
+        bullet2.show(x, y);
     }
 });
 
