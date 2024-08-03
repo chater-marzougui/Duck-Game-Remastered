@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullet Visualization</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+</head>
+<body style="background: url(../assets/images/homeBG.png) 0 0 / cover;">
+    <div id="multi-game-container" style="width: 100%; height: 100vh; position: relative;">
+    </div>
+    <script src="./assets/js/classes.js"></script>
+    <script>
+        const singleGameContainer = document.getElementById('multi-game-container');
+        let bullet = new Bullet(singleGameContainer);
+
+        socket.on('position', (data) => {
+            let x = parseInt(data.x * singleGameContainer.clientWidth);
+            let y = parseInt(data.y * singleGameContainer.clientHeight);
+            bullet.show(x, y , data.should_shoot);
+        });
+    </script>
+</body>
+</html>

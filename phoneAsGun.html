@@ -55,7 +55,7 @@
     <script>
         function shoot() {
             const player = document.querySelector('input[name="player"]:checked').value;
-            const url = `http://192.168.234.167:5000/shoot?player=player${player}&shoot=true`;
+            const url = `http://192.168.43.134:5000/shoot?player=player${player}&shoot=true`;
 
             fetch(url)
                 .then(response => {

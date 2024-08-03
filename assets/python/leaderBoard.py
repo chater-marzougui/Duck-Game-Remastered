@@ -76,6 +76,24 @@ def submit_score():
 
     return 'Score submitted successfully!', 200
 
+@app.route('/shootTest', methods=['GET'])
+def shoot_test():
+    player = request.args.get('player')
+    if player:
+        can_shoot = request.args.get('shoot')
+        x = request.args.get('x')
+        y = request.args.get('y')
+        if can_shoot == 'true':
+            shoot = True
+        else:
+            shoot = False
+        data = {'x': float(x), 'y': float(y), 'player_id': player, 'should_shoot': shoot}
+        print(data)
+        socketio.emit('position', data)
+        return "Shoot event received", 200
+    else:
+        return "Invalid request", 400
+
 @app.route('/leaderboard', methods=['GET'])
 def get_leaderboard():
     with open(leaderboard_file, 'r') as file:
@@ -100,11 +118,13 @@ def send_detected(corners, ids, width):
         if marker_id[0] == 12:
             player_id = "player1"
             x , y = final_point(center, player_id, width)
+            if x is None or y is None: continue
             data = {'x': x, 'y': y, 'player_id': player_id, 'should_shoot': player1CanShoot}
             player1CanShoot = False
         elif marker_id[0] == 33:
             player_id = "player2"
             x , y = final_point(center, player_id, width)
+            if x is None or y is None: continue
             data = {'x': x, 'y': y, 'player_id': player_id, 'should_shoot': player2CanShoot}
             player2CanShoot = False
         if data:
@@ -122,6 +142,16 @@ def final_point(center: tuple, player, width):
     
     x_point = round((xi - x1) / (x2 - x1), 6)
     y_point = round((yi - y1) / (y2 - y1), 6)
+    
+    if x_point > 1.1 or y_point > 1.1:
+        return None, None
+    if x_point < -0.1 or y_point < -0.1:
+        return None, None
+    
+    if x_point > 1: x_point = 1
+    if y_point > 1: y_point = 1
+    if x_point < 0: x_point = 0
+    if y_point < 0: y_point = 0
     return x_point , y_point 
     
 
