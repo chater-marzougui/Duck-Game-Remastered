@@ -126,6 +126,8 @@ socket.on('adjustment_shot', (data) => {
             saveCoordinates();
             duck.style.display = 'none';
             startGameB = true;
+            testBullet.element.style.display = 'none';
+            testBullet2.element.style.display = 'none';
         } else {
             clickCount++;
         }

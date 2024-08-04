@@ -37,7 +37,7 @@ while True:
     # If markers are detected
     if ids is not None:
         # Draw the detected markers
-        #cv2.aruco.drawDetectedMarkers(frame, corners, ids)
+        cv2.aruco.drawDetectedMarkers(frame, corners, ids)
 
         # Extract the position of the marker
         for corner in corners:

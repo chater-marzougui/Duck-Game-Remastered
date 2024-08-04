@@ -76,24 +76,6 @@ def submit_score():
 
     return 'Score submitted successfully!', 200
 
-@app.route('/shootTest', methods=['GET'])
-def shoot_test():
-    player = request.args.get('player')
-    if player:
-        can_shoot = request.args.get('shoot')
-        x = request.args.get('x')
-        y = request.args.get('y')
-        if can_shoot == 'true':
-            shoot = True
-        else:
-            shoot = False
-        data = {'x': float(x), 'y': float(y), 'player_id': player, 'should_shoot': shoot}
-        print(data)
-        socketio.emit('position', data)
-        return "Shoot event received", 200
-    else:
-        return "Invalid request", 400
-
 @app.route('/leaderboard', methods=['GET'])
 def get_leaderboard():
     with open(leaderboard_file, 'r') as file:
@@ -202,10 +184,6 @@ def camera_thread():
             if not ret:
                 continue
 
-            # skip_frame += 1
-            # if skip_frame % 2:
-            #     continue
-
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             corners, ids, _ = cv2.aruco.ArucoDetector(aruco_dict, detectorParams=aruco_params).detectMarkers(gray)
 
@@ -237,24 +215,23 @@ def adjust_multi_player():
     global player1CanShoot, player2CanShoot
     arr1 = []
     arr2 = []
+    
     while len(arr1) != 4:
         while not player1CanShoot: time.sleep(0.01)
         pos = detect_position('player1')
         player1CanShoot = False
         if pos:
             socketio.emit('adjustment_shot', 'player1')
-            print(pos)
             arr1.append(pos)
+            
     while len(arr2) != 4:
         while not player2CanShoot: time.sleep(0.01)
         pos = detect_position('player2')
         player2CanShoot = False
         if pos:
-            print(pos)
             socketio.emit('adjustment_shot', 'player2')
             arr2.append(pos)
-    print(arr2)
-    print("adjusting...")
+
     adjust_player_box(arr1, 'player1')
     adjust_player_box(arr2, 'player2')
 
@@ -277,9 +254,10 @@ def adjust_single_player():
 def adjust_shooting(data):
     global player1CanShoot, player2CanShoot
     if data.get('type') == "MultiPlayer":
-        print("adjusting multi player")
+        print("adjusting Multi player")
         adjust_multi_player()
     elif data.get('type') == 'SinglePlayer':
+        print("adjusting Single player")
         adjust_single_player()
     
     thread = threading.Thread(target=camera_thread)
