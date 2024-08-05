@@ -21,10 +21,8 @@ updateTimerDisplay();
 
 let player1BulletsRemaining = player1Bullets.length;
 let player1canShoot = true;
-let player1killCount = 0;
 let player2BulletsRemaining = player2Bullets.length;
 let player2canShoot = true;
-let player2killCount = 0;
 
 let bestScore = 0;
 const bullet1 = new Bullet(singleGameContainer);
@@ -160,6 +158,13 @@ function regenerateBullets2() {
     }, 2000);
 }
 
+function resetBullets() {
+    player1BulletsRemaining = player1Bullets.length;
+    player2BulletsRemaining = player2Bullets.length;
+    updateBullets1();
+    updateBullets2();
+}
+
 function updateBullets1() {
     player1Bullets.forEach((bullet, index) => {
         bullet.style.visibility = index < player1BulletsRemaining ? 'visible' : 'hidden';
@@ -220,7 +225,6 @@ function updateTimerDisplay() {
 function endGame() {
     gameContainer.style.display = 'none';
     removeDucks();
-    //stopKilling();
     resultContainer.style.display = 'flex';
     const endSound = document.getElementById('end-sound');
     endSound.currentTime = 0;

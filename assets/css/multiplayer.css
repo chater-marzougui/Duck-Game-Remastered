@@ -26,11 +26,13 @@ body, html {
 
 #single-container h1 {
     padding: 10px;
-    backdrop-filter: blur(5px);
+    /* backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); */
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border-radius: 10px;
-    -webkit-backdrop-filter: blur(5px);
     height: 40px;
-    color: blue;
+    margin-bottom: 70px;
+    color: rgb(61, 12, 80);
 }
 
 #single-container button {
@@ -103,6 +105,51 @@ body, html {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.player-dialog {
+    position: absolute;
+    top: 50px;
+    left: calc(50% - 272px);
+    width: 300px;
+    margin: 0 0;
+    padding: 30px 120px;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: none;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+}
+
+.player-dialog h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.blueD {
+    background-color: #3498db;
+}
+
+.redD {
+    background-color: #e74c3c;
+}
+
+@keyframes shake {
+    0% { transform: translate(4px, 4px) rotate(0deg); }
+    10% { transform: translate(-4px, -2px) rotate(-4deg); }
+    20% { transform: translate(-3px, 0px) rotate(4deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(4px, -4px) rotate(4deg); }
+    50% { transform: translate(-4px, 2px) rotate(-4deg); }
+    60% { transform: translate(-3px, 4px) rotate(0deg); }
+    70% { transform: translate(3px, 4px) rotate(-4deg); }
+    80% { transform: translate(-4px, -4px) rotate(4deg); }
+    90% { transform: translate(4px, 2px) rotate(0deg); }
+    100% { transform: translate(4px, -2px) rotate(-4deg); }
+}
+
+/* Game Container*/
 
 #multi-game-container {
     width: 100%;

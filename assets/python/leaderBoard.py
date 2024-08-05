@@ -217,7 +217,12 @@ def adjust_multi_player():
     arr2 = []
     
     while len(arr1) != 4:
-        while not player1CanShoot: time.sleep(0.01)
+        while not player1CanShoot:
+            if player2CanShoot:
+                player2CanShoot = False
+                socketio.emit('shakeModals', 'player2')
+            time.sleep(0.01)
+            
         pos = detect_position('player1')
         player1CanShoot = False
         if pos:
@@ -225,7 +230,12 @@ def adjust_multi_player():
             arr1.append(pos)
             
     while len(arr2) != 4:
-        while not player2CanShoot: time.sleep(0.01)
+        while not player2CanShoot:
+            if player1CanShoot:
+                player1CanShoot = False
+                socketio.emit('shakeModals', 'player1')
+            time.sleep(0.01)
+            
         pos = detect_position('player2')
         player2CanShoot = False
         if pos:

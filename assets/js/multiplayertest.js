@@ -9,6 +9,20 @@ const duckImages = {
     dead: 'assets/images/dead-duck.png'
 };
 
+const player1Dialog = document.getElementById('player1-dialog');
+const player2Dialog = document.getElementById('player2-dialog');
+
+player1Dialog.showModal();
+
+function shakeModals() {
+    player1Dialog.style.animation = 'shake 0.5s linear infinite';
+    player2Dialog.style.animation = 'shake 0.5s linear infinite';
+    setTimeout(() => {
+        player1Dialog.style.animation = 'none';
+        player2Dialog.style.animation = 'none';
+    }, 700);
+}
+
 function changeTime() {
     const newTime = document.getElementById('newTime').value;
 
@@ -36,6 +50,8 @@ const testBullet2 = new Bullet(testContainer, false);
 let clickCount = 1;
 const clickCoordinates = [];
 let startGameB = false;
+let player1killCount = 0;
+let player2killCount = 0;
 
 const corners = [
     { x: -40, y: -40, rotation: 135 },
@@ -76,10 +92,13 @@ function startGame() {
     if(startGameB){
         testContainer.style.display = 'none';
         gameContainer.style.display = 'flex';
+        resetBullets()
         document.getElementById('result').style.display = 'none';
         const startSound = document.getElementById('start-sound');
         startSound.currentTime = 0;
         startSound.play();
+        player1killCount = 0;
+        player2killCount = 0;
         initializeDucks();
         startGameTimer();
         socket.emit('tracking_data', true)
@@ -89,34 +108,44 @@ function startGame() {
     }
 }
 
-/*
-duck.addEventListener('click', (event) => {
-    duck.src = duckImages.dead;
-    testBullet.show(event.clientX, event.clientY);
-    setTimeout(() => {
-        const { x, y, rotation } = corners[clickCount%4];
-        duck.style.left = `${x}px`;
-        duck.style.top = `${y}px`;
-        duck.style.transform = `rotate(${rotation}deg)`;
-        clickCoordinates.push({ x: event.clientX, y: event.clientY });
+function turnToModal2() {
+    player1Dialog.close();
+    player2Dialog.showModal();
+}
 
-        if (clickCount === 8) {
-            saveCoordinates();
-            duck.style.display = 'none';
-            startGameB = true;
-        } else {
-            clickCount++;
-        }
-        duck.src = duckImages.alive;
-    }, 600);
-});
-*/
+function closeModals() {
+    player1Dialog.close();
+    player2Dialog.close();
+}
+// duck.addEventListener('click', (event) => {
+//     duck.src = duckImages.dead;
+//     testBullet.show(event.clientX, event.clientY);
+//     setTimeout(() => {
+//         const { x, y, rotation } = corners[clickCount%4];
+//         duck.style.left = `${x}px`;
+//         duck.style.top = `${y}px`;
+//         duck.style.transform = `rotate(${rotation}deg)`;
+//         clickCoordinates.push({ x: event.clientX, y: event.clientY });
+
+//         if (clickCount === 8) {
+//             saveCoordinates();
+//             duck.style.display = 'none';
+//             startGameB = true;
+//         } else {
+//             clickCount++;
+//         }
+//         duck.src = duckImages.alive;
+//     }, 600);
+// });
 
 socket.on('adjustment_shot', (data) => {
     duck.src = duckImages.dead;
     let x = shootCorners[(clickCount -1)%4].x;
     let y = shootCorners[(clickCount -1)%4].y;
     clickCount <= 4 ? testBullet.show(x , y , true) : testBullet2.show(x , y , true);
+    if (clickCount === 4) {
+        turnToModal2();
+    }
     setTimeout(() => {
         const { x, y, rotation } = corners[clickCount%4];
         duck.style.left = `${x}px`;
@@ -126,6 +155,7 @@ socket.on('adjustment_shot', (data) => {
             saveCoordinates();
             duck.style.display = 'none';
             startGameB = true;
+            closeModals();
             testBullet.element.style.display = 'none';
             testBullet2.element.style.display = 'none';
         } else {
@@ -133,6 +163,10 @@ socket.on('adjustment_shot', (data) => {
         }
         duck.src = duckImages.alive;
     }, 600);
+});
+
+socket.on('shakeModals', () => {
+    shakeModals();
 });
 
 socket.emit('adjust-shooting', {type: "MultiPlayer", height: window.innerHeight, width: window.innerWidth});
