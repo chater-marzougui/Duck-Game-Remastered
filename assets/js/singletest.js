@@ -4,7 +4,8 @@ gameContainer.style.display = 'none';
 const testContainer = document.getElementById('single-container');
 const player1Dialog = document.getElementById('player1-dialog');
 const player2Dialog = document.getElementById('player2-dialog');
-
+const unknownDialog = document.getElementById('unknown-player-dialog');
+const intruderDialog = document.getElementById('intruder-dialog');
 
 let gameDuration = 2 * 60 * 1000;
 const duckImages = {
@@ -12,12 +13,13 @@ const duckImages = {
     dead: 'assets/images/dead-duck.png'
 };
 
-function shakeModals() {
-    player1Dialog.style.animation = 'shake 0.5s linear infinite';
-    player2Dialog.style.animation = 'shake 0.5s linear infinite';
+unknownDialog.showModal();
+
+function shakeModals(Dialog) {
+    Dialog.style.animation = 'shake 0.5s linear infinite';
+    
     setTimeout(() => {
-        player1Dialog.style.animation = 'none';
-        player2Dialog.style.animation = 'none';
+        Dialog.style.animation = 'none';
     }, 700);
 }
 
@@ -40,28 +42,6 @@ const shootCorners = [
 
 let killCount = 0;
 const testBullet = new Bullet(testContainer);
-// duck.addEventListener('click', (event) => {
-//     duck.src = duckImages.dead;
-//     testBullet.show(event.clientX, event.clientX);
-//     setTimeout(() => {
-//         if (clickCount < 5) {
-//             const { x, y, rotation } = corners[clickCount>3?3:clickCount];
-//             duck.style.left = `${x}px`;
-//             duck.style.top = `${y}px`;
-//             duck.style.transform = `rotate(${rotation}deg)`;
-//             clickCoordinates.push({ x: event.clientX, y: event.clientY });
-    
-//             if (clickCount === 4) {
-//                 saveCoordinates();
-//                 duck.style.display = 'none';
-//                 startGameB = true;
-//             } else {
-//                 clickCount++;
-//             }
-//         }
-//         duck.src = duckImages.alive;
-//     }, 600);
-// });
 
 function turnToModal2() {
     player1Dialog.close();
@@ -71,10 +51,13 @@ function turnToModal2() {
 function closeModals() {
     player1Dialog.close();
     player2Dialog.close();
+    unknownDialog.close();
+    intruderDialog.close();
 }
 
 function startGame() {
     if(startGameB){
+        closeModals();
         testContainer.style.display = 'none';
         gameContainer.style.display = 'flex';
         resetBullets();
@@ -89,7 +72,9 @@ function startGame() {
         socket.emit('tracking_data' , true);
     }
     else{
-        shakeModals();
+        shakeModals(player1Dialog);
+        shakeModals(player2Dialog);
+        shakeModals(unknownDialog);
     }
 }
 function saveCoordinates() {
@@ -157,8 +142,23 @@ socket.on('adjustment_shot', (data) => {
     }, 600);
 });
 
-socket.on('shakeModals', () => {
-    shakeModals();
+socket.on('shakeModals', (data) => {
+    if (data === 'player1') {
+        shakeModals(player2Dialog);
+    } else {
+        shakeModals(player1Dialog);
+    }
+});
+
+socket.on('determinePlayer', (data) => {
+    closeModals();
+    if (data === 'player1') {
+        player1Dialog.showModal();
+        shakeModals(player1Dialog);
+    } else {
+        player2Dialog.showModal();
+        shakeModals(player2Dialog);
+    }
 });
 
 socket.emit('adjust-shooting', {type: "SinglePlayer", height: window.innerHeight, width: window.innerWidth});

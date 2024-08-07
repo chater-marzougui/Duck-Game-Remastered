@@ -108,6 +108,39 @@ body, html {
     border-radius: 4px;
 }
 
+.player-dialog {
+    position: absolute;
+    top: 50px;
+    left: calc(50% - 272px);
+    width: 300px;
+    margin: 0 0;
+    padding: 30px 120px;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: none;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+}
+
+.player-dialog h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.blueD {
+    background-color: #3498db;
+}
+
+.redD {
+    background-color: #e74c3c;
+}
+
+.yellowD {
+    background-color: #f1c40f;
+}
+
 /*Single Game Container here*/
 
 

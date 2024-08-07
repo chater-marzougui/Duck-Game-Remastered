@@ -8,7 +8,6 @@ const killCountElement = document.getElementById('kill-count');
 const finalScoreElement = document.getElementById('final-score');
 const clickSpace = document.getElementById('click-space');
 const finalTopScoreElement = document.getElementById('result-top-score');
-
 // TO ADJUST
 let numberToUpdate = 9;
 let maxNumberToUpdate = 200;
@@ -239,5 +238,26 @@ socket.on('position', (data) => {
         shakeModals();
     }
 });
+
+socket.on('intruder', (player) => {
+    showIntruder(player);
+});
+
+function showIntruder(player) {
+    const intruderText = document.getElementById('intruder-text');
+    intruderText.textContent = `${player} get out!`;
+    if (player === "player1") {
+        intruderDialog.classList.remove("redD");
+        intruderDialog.classList.add("blueD");
+    } else if (player === "player2") {
+        intruderDialog.classList.remove("blueD");
+        intruderDialog.classList.add("redD");
+    }
+    intruderDialog.showModal();
+    shakeModals(intruderDialog);
+    setTimeout(() => {
+        intruderDialog.close();
+    }, 1000);
+}
 
 updateDucks();

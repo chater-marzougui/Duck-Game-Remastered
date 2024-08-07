@@ -9,6 +9,9 @@
 </head>
 <body>
     <div id="single-container">
+        <dialog id="unknown-player-dialog" class="player-dialog yellowD"><h2> Someone Shoot the Corners </h2></dialog>
+        <dialog id="player1-dialog" class="player-dialog blueD"><h2> Player 1 Shoot Corners </h2></dialog>
+        <dialog id="player2-dialog" class="player-dialog redD"><h2> Player 2 Shoot Corners </h2></dialog>
         <img id="test-duck" src="./assets/images/alive-duck.png" alt="Duck">
         <h1>
             Shoot the ducks to adjust the positioning
@@ -26,6 +29,7 @@
         <audio id="start-sound" src="./assets/sound/start.wav"></audio>
     </div>
     <div id="single-game-container">
+        <dialog id="intruder-dialog" class="player-dialog"><h2 id="intruder-text"> Someone Shoot the Corners </h2></dialog>
         <div id="click-space"></div>
         <img class="foreground" src="./assets/images/foreground.png" alt="grass">
         <img class="reload" src="./assets/images/reload.png" alt="arrows">

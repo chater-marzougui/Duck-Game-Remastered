@@ -22,6 +22,7 @@ aruco_params = cv2.aruco.DetectorParameters()
 leaderboard_file = 'leaderboard.json'
 player1Positioning = [(0, 0), (480, 640)]
 player2Positioning = [(0, 0), (480, 640)]
+player = ""
 
 if not os.path.exists(leaderboard_file):
     with open(leaderboard_file, 'w') as file:
@@ -112,6 +113,27 @@ def send_detected(corners, ids, width):
         if data:
             socketio.emit('position', data)
 
+def send_detected_single_player(corners, ids, width):
+    global player1CanShoot, player2CanShoot, player
+    for i, marker_id in enumerate(ids):
+        data = None
+        player_id = "player1" if marker_id[0] == 12 else "player2"
+        if player_id != player: continue
+        playerCanShoot = player1CanShoot if marker_id[0] == 12 else player2CanShoot
+        player1CanShoot = False
+        player2CanShoot = False
+        corner = corners[i][0]
+        center = tuple(np.mean(corner, axis=0).astype(int))
+        
+        x , y = final_point(center, player, width)
+        if x is None or y is None: continue
+        
+        data = {'x': x, 'y': y, 'player_id': player, 'should_shoot': playerCanShoot}
+        playerCanShoot = False
+
+        if data:
+            socketio.emit('position', data)
+
 def final_point(center: tuple, player, width):
     global player1Positioning, player2Positioning
     xi, yi = width - center[0], center[1]
@@ -157,6 +179,7 @@ def detect_position(player):
             center = tuple(np.mean(corner, axis=0).astype(int))
             if (marker_id[0] == 12 and player1CanShoot) or (marker_id[0] == 33 and player2CanShoot):
                 return (width - center[0], center[1])
+    return None
 
 def adjust_player_box(arr : list[tuple], player):
     global player1Positioning, player2Positioning
@@ -177,7 +200,7 @@ def adjust_player_box(arr : list[tuple], player):
          
 
 def camera_thread():
-    global detect_markers, skip_frame, aruco_dict, aruco_params
+    global detect_markers, skip_frame, aruco_dict, aruco_params, player
     while True:
         if detect_markers:
             ret, frame = cap.read()
@@ -188,24 +211,29 @@ def camera_thread():
             corners, ids, _ = cv2.aruco.ArucoDetector(aruco_dict, detectorParams=aruco_params).detectMarkers(gray)
 
             if ids is not None:
-                send_detected(corners, ids, frame.shape[1])
+                if player == "":
+                    send_detected(corners, ids, frame.shape[1])
+                else: 
+                    send_detected_single_player(corners, ids, frame.shape[1])
             
             time.sleep(0.01)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        time.sleep(0.02)
+        else:
+            time.sleep(0.02)
 
 @app.route('/shoot', methods=['GET'])
 def shoot():
-    global player1CanShoot, player2CanShoot
-    player = request.args.get('player')
+    global player1CanShoot, player2CanShoot, player
+    playerID = request.args.get('player')
     shoot = request.args.get('shoot')
 
-    if player and shoot:
-        if player == 'player1':
+    if playerID and shoot:
+        if playerID != player and player != "":
+            socketio.emit('intruder', playerID)
+            return "Shoot event received", 200
+        
+        if playerID == 'player1':
             player1CanShoot = True
-        elif player == 'player2':
+        elif playerID == 'player2':
             player2CanShoot = True
         return "Shoot event received", 200
     else:
@@ -246,25 +274,39 @@ def adjust_multi_player():
     adjust_player_box(arr2, 'player2')
 
 def adjust_single_player():
-    global player1CanShoot, player2CanShoot
+    global player1CanShoot, player2CanShoot, player
     arr1 = []
-    k = 0
-    while k != 3:
-        while not (player1CanShoot or player2CanShoot): continue
+    while not (player1CanShoot or player2CanShoot): time.sleep(0.01)
+    if player1CanShoot:
         pos = detect_position('player1')
         player1CanShoot = False
+        player = 'player1'
+    if player2CanShoot:
+        pos = detect_position('player2')
         player2CanShoot = False
+        player = 'player2'
+    arr1.append(pos)
+    socketio.emit('determinePlayer', player)
+    while len(arr1) != 4:
+        while not (player1CanShoot or player2CanShoot): time.sleep(0.01)
+        if player1CanShoot and player == 'player1':
+            pos = detect_position('player1')
+            player1CanShoot = False
+        elif player2CanShoot and player == 'player2':
+            pos = detect_position('player2')
+            player2CanShoot = False
+        else:
+            socketio.emit('shakeModals', player)
         arr1.append(pos)
-        k+=1
-    adjust_player_box(arr1, 'player1')
-    adjust_player_box(arr1, 'player2')
+    adjust_player_box(arr1, player)
 
 
 @socketio.on('adjust-shooting')
 def adjust_shooting(data):
-    global player1CanShoot, player2CanShoot
+    global player1CanShoot, player2CanShoot, player
     if data.get('type') == "MultiPlayer":
         print("adjusting Multi player")
+        player = ""
         adjust_multi_player()
     elif data.get('type') == 'SinglePlayer':
         print("adjusting Single player")
