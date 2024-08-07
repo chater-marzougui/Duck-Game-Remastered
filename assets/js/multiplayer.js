@@ -13,7 +13,7 @@ const finalScorePlayer2 = document.getElementById('player2-score');
 const clickSpace = document.getElementById('click-space');
 
 let numberToUpdate = 9;
-let maxNumberToUpdate = 250;
+let maxNumberToUpdate = 200;
 
 let gameTimer;
 let timeRemaining = gameDuration;
@@ -122,11 +122,14 @@ function detectHit(shotX, shotY, player) {
     }
 }
 
-function removeDucks(){
+function regenerate(){
     ducks.forEach(duck => {
         duck.element.remove();
     });
     ducks = [];
+    for (let i = 0; i < 7; i++) {
+        createDuck();
+    }
 }
 
 function updateKillCount() {
@@ -266,29 +269,7 @@ function displayBestScore() {
         .catch(error => console.error('Error:', error));
 }
 
-let player1Interval, player2Interval;
-
-function startKilling() {
-    player1Interval = setInterval(() => {
-        let player1_x = Math.random() * singleGameContainer.clientWidth;
-        let player1_y = Math.random() * singleGameContainer.clientHeight;
-        shoot(player1_x, player1_y, "player1");
-    }, 1100);
-
-    player2Interval = setInterval(() => {
-        let player2_x = Math.random() * singleGameContainer.clientWidth;
-        let player2_y = Math.random() * singleGameContainer.clientHeight;
-        shoot(player2_x, player2_y, "player2");
-    }, 1500);
-}
-
-function stopKilling() {
-    clearInterval(player1Interval);
-    clearInterval(player2Interval);
-}
-
 socket.on('position', (data) => {
-    console.log(data);
     let x = parseInt(data.x * singleGameContainer.clientWidth);
     let y = parseInt(data.y * singleGameContainer.clientHeight);
     if (data.should_shoot) {

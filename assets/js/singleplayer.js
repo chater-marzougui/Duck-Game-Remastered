@@ -10,9 +10,8 @@ const clickSpace = document.getElementById('click-space');
 const finalTopScoreElement = document.getElementById('result-top-score');
 
 // TO ADJUST
-let gameDuration = 2 * 60 * 1000;
 let numberToUpdate = 9;
-let maxNumberToUpdate = 250;
+let maxNumberToUpdate = 200;
 
 
 let gameTimer;
@@ -27,9 +26,12 @@ const bullet = new Bullet(singleGameContainer);
 
 
 let ducks = [];
-for (let i = 0; i < 7; i++) {
-    createDuck();
+function initializeDucks(){
+    for (let i = 0; i < 7; i++) {
+        createDuck();
+    }
 }
+
 function createDuck() {
     const x = Math.round(Math.random()) * window.innerWidth;
     const yCalc = Math.random() * singleGameContainer.clientHeight - 140;
@@ -130,6 +132,11 @@ function updateBullets() {
     });
 }
 
+function resetBullets() {
+    bulletsRemaining = bullets.length;
+    updateBullets();
+}
+
 function shoot(x, y) {
     if (canShoot && bulletsRemaining > 0) {
         bullet.show(x, y);
@@ -180,6 +187,7 @@ function endGame() {
     endSound.play();
     finalScoreElement.textContent = `Your score: ${killCount}`;
     finalTopScoreElement.textContent = `Top score: ${bestScore > killCount ? bestScore : killCount}`;
+    socket.emit('tracking_data', false);
 }
 
 function sendToLeaderBoard() {
@@ -220,8 +228,15 @@ clickSpace.addEventListener( 'click' , (event) => {
 });
 
 socket.on('position', (data) => {
-    if (data.should_shoot) {
-        shoot(data.x, data.y);
+    let x = parseInt(data.x * singleGameContainer.clientWidth);
+    let y = parseInt(data.y * singleGameContainer.clientHeight);
+    if (data.should_shoot && data.player_id === "player1") {
+        shoot(x, y);
+    } else if (data.player_id === "player1"){
+        bullet.show(x, y);
+    } else {
+        player2Dialog.showModal();
+        shakeModals();
     }
 });
 

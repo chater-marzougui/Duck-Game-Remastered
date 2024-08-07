@@ -3,14 +3,14 @@ const gameContainer = document.getElementById('multi-game-container');
 gameContainer.style.display = 'none';
 const testContainer = document.getElementById('single-container');
 
+const player1Dialog = document.getElementById('player1-dialog');
+const player2Dialog = document.getElementById('player2-dialog');
+
 let gameDuration = 2 * 60 * 1000;
 const duckImages = {
     alive: 'assets/images/alive-duck.png',
     dead: 'assets/images/dead-duck.png'
 };
-
-const player1Dialog = document.getElementById('player1-dialog');
-const player2Dialog = document.getElementById('player2-dialog');
 
 player1Dialog.showModal();
 
@@ -48,7 +48,6 @@ const testBullet = new Bullet(testContainer);
 const testBullet2 = new Bullet(testContainer, false);
 
 let clickCount = 1;
-const clickCoordinates = [];
 let startGameB = false;
 let player1killCount = 0;
 let player2killCount = 0;
@@ -104,7 +103,7 @@ function startGame() {
         socket.emit('tracking_data', true)
     }
     else{
-        alert('Please shoot the duck to adjust positioning');
+        shakeModals();
     }
 }
 

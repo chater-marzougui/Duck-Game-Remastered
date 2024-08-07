@@ -2,15 +2,26 @@ const duck = document.getElementById('test-duck');
 const gameContainer = document.getElementById('single-game-container');
 gameContainer.style.display = 'none';
 const testContainer = document.getElementById('single-container');
+const player1Dialog = document.getElementById('player1-dialog');
+const player2Dialog = document.getElementById('player2-dialog');
 
 
+let gameDuration = 2 * 60 * 1000;
 const duckImages = {
     alive: 'assets/images/alive-duck.png',
     dead: 'assets/images/dead-duck.png'
 };
 
+function shakeModals() {
+    player1Dialog.style.animation = 'shake 0.5s linear infinite';
+    player2Dialog.style.animation = 'shake 0.5s linear infinite';
+    setTimeout(() => {
+        player1Dialog.style.animation = 'none';
+        player2Dialog.style.animation = 'none';
+    }, 700);
+}
+
 let clickCount = 1;
-const clickCoordinates = [];
 let startGameB = false;
 
 const corners = [
@@ -19,47 +30,66 @@ const corners = [
     { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
     { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
 ];
+
+const shootCorners = [
+    {x : 0, y : 0},
+    {x: window.innerWidth, y: 0},
+    {x: window.innerWidth, y: window.innerHeight},
+    {x: 0, y: window.innerHeight}
+]
+
+let killCount = 0;
 const testBullet = new Bullet(testContainer);
-duck.addEventListener('click', (event) => {
-    duck.src = duckImages.dead;
-    testBullet.show(event.clientX, event.clientX);
-    setTimeout(() => {
-        if (clickCount < 5) {
-            const { x, y, rotation } = corners[clickCount>3?3:clickCount];
-            duck.style.left = `${x}px`;
-            duck.style.top = `${y}px`;
-            duck.style.transform = `rotate(${rotation}deg)`;
-            clickCoordinates.push({ x: event.clientX, y: event.clientY });
+// duck.addEventListener('click', (event) => {
+//     duck.src = duckImages.dead;
+//     testBullet.show(event.clientX, event.clientX);
+//     setTimeout(() => {
+//         if (clickCount < 5) {
+//             const { x, y, rotation } = corners[clickCount>3?3:clickCount];
+//             duck.style.left = `${x}px`;
+//             duck.style.top = `${y}px`;
+//             duck.style.transform = `rotate(${rotation}deg)`;
+//             clickCoordinates.push({ x: event.clientX, y: event.clientY });
     
-            if (clickCount === 4) {
-                saveCoordinates();
-                duck.style.display = 'none';
-                startGameB = true;
-            } else {
-                clickCount++;
-            }
-        }
-        duck.src = duckImages.alive;
-    }, 600);
-});
+//             if (clickCount === 4) {
+//                 saveCoordinates();
+//                 duck.style.display = 'none';
+//                 startGameB = true;
+//             } else {
+//                 clickCount++;
+//             }
+//         }
+//         duck.src = duckImages.alive;
+//     }, 600);
+// });
+
+function turnToModal2() {
+    player1Dialog.close();
+    player2Dialog.showModal();
+}
+
+function closeModals() {
+    player1Dialog.close();
+    player2Dialog.close();
+}
 
 function startGame() {
     if(startGameB){
         testContainer.style.display = 'none';
         gameContainer.style.display = 'flex';
+        resetBullets();
         document.getElementById('result').style.display = 'none';
         const startSound = document.getElementById('start-sound');
         startSound.currentTime = 0;
         startSound.play();
         killCount = 0;
-        timeRemaining = gameDuration;
         updateTimerDisplay();
-        regenerate();
+        initializeDucks();
         displayBestScore();
         socket.emit('tracking_data' , true);
     }
     else{
-        alert('Please shoot the duck to adjust positioning');
+        shakeModals();
     }
 }
 function saveCoordinates() {
@@ -83,12 +113,6 @@ function saveCoordinates() {
     });
 }
 
-function deb() {
-    testContainer.style.display = 'none';
-    gameContainer.style.display = 'flex';
-    document.getElementById('result').style.display = 'none';
-}
-
 document.getElementById('adjustTimeBtn').addEventListener('click', function() {
     document.getElementById('timeForm').style.display = 'block';
     document.getElementById('StartGame-Button').style.display = 'none';
@@ -109,3 +133,32 @@ function changeTime() {
 
     return false;
 }
+
+socket.on('adjustment_shot', (data) => {
+    duck.src = duckImages.dead;
+    let x = shootCorners[(clickCount -1)%4].x;
+    let y = shootCorners[(clickCount -1)%4].y;
+    testBullet.show(x, y);
+    setTimeout(() => {
+        const { x, y, rotation } = corners[clickCount>3?3:clickCount];
+        duck.style.left = `${x}px`;
+        duck.style.top = `${y}px`;
+        duck.style.transform = `rotate(${rotation}deg)`;
+        if (clickCount === 4) {
+            saveCoordinates();
+            duck.style.display = 'none';
+            startGameB = true;
+            closeModals();
+            testBullet.element.style.display = 'none';
+        } else {
+            clickCount++;
+        }
+        duck.src = duckImages.alive;
+    }, 600);
+});
+
+socket.on('shakeModals', () => {
+    shakeModals();
+});
+
+socket.emit('adjust-shooting', {type: "SinglePlayer", height: window.innerHeight, width: window.innerWidth});
