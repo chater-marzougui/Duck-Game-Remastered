@@ -118,6 +118,7 @@ body, html {
     text-align: center;
     font-family: Arial, sans-serif;
     z-index: 1000;
+    display: none;
 }
 
 .player-dialog h2 {

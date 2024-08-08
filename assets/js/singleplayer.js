@@ -1,63 +1,15 @@
 const singleGameContainer = document.getElementById('single-game-container');
-const bulletsContainer = document.querySelector('.bullets');
+
+const finalTopScoreElement = document.getElementById('result-top-score');
 const bullets = bulletsContainer.querySelectorAll('.bullet');
 const reload = document.querySelector('.reload');
-const resultContainer = document.getElementById('result');
-const timerElement = document.getElementById('game-timer');
 const killCountElement = document.getElementById('kill-count');
 const finalScoreElement = document.getElementById('final-score');
-const clickSpace = document.getElementById('click-space');
-const finalTopScoreElement = document.getElementById('result-top-score');
-// TO ADJUST
-let numberToUpdate = 9;
-let maxNumberToUpdate = 200;
-
-
-let gameTimer;
-let timeRemaining = gameDuration;
-updateTimerDisplay();
 
 let bulletsRemaining = bullets.length;
 let canShoot = true;
-let bestScore = 0;
+let localKillCount = 0;
 const bullet = new Bullet(singleGameContainer);
-
-
-let ducks = [];
-function initializeDucks(){
-    for (let i = 0; i < 7; i++) {
-        createDuck();
-    }
-}
-
-function createDuck() {
-    const x = Math.round(Math.random()) * window.innerWidth;
-    const yCalc = Math.random() * singleGameContainer.clientHeight - 140;
-    const y = yCalc > 0 ? yCalc : yCalc + 140;
-    const direction = Math.round(Math.random()) === 0 ? 'left' : 'right';
-    const duck = new Duck(ducks.length, x, y, direction, singleGameContainer);
-    ducks.push(duck);
-}
-
-function updateDucks() {
-    ducks.forEach(duck => {
-        duck.updatePosition();
-    });
-    requestAnimationFrame(updateDucks);
-}
-
-function showKillNotification(imageId, soundId) {
-    const shotSound = document.getElementById('shot-sound');
-    shotSound.volume = 0.4;
-    const killImg = document.getElementById(imageId);
-    const killSound = document.getElementById(soundId);
-    killSound.currentTime = 0;
-    killSound.play();
-    killImg.style.display = 'flex';
-    setTimeout(() => {
-        killImg.style.display = 'none';
-    }, 1500);
-}
 
 function detectHit(shotX, shotY) {
     let hits = 0;
@@ -65,12 +17,12 @@ function detectHit(shotX, shotY) {
         const duckRect = duck.element.getBoundingClientRect();
         if (
             shotX >= duckRect.left && shotX <= duckRect.right &&
-            shotY >= duckRect.top && shotY <= duckRect.bottom
+            shotY >= duckRect.top && shotY <= duckRect.bottom && duck.alive
         ) {
-            killCount++;
+            localKillCount = addKillCount();
             hits++;
-            if(killCount===1){startGameTimer();}
-            if(killCount%numberToUpdate ===0 && killCount<maxNumberToUpdate){
+            if(localKillCount===1){startGameTimer();}
+            if(localKillCount%numberToUpdate ===0 && localKillCount<maxNumberToUpdate){
                 createDuck();
             }
             updateKillCount()
@@ -95,16 +47,6 @@ function detectHit(shotX, shotY) {
             showKillNotification('quintuple-kil-image', 'quintuple-kil-sound');
             break;
             
-    }
-}
-
-function regenerate(){
-    ducks.forEach(duck => {
-        duck.element.remove();
-    });
-    ducks = [];
-    for (let i = 0; i < 7; i++) {
-        createDuck();
     }
 }
 
@@ -149,34 +91,8 @@ function shoot(x, y) {
     }
 }
 
-function startGameTimer() {
-    const endTime = Date.now() + gameDuration;
-    gameTimer = setInterval(() => {
-        const now = Date.now();
-        timeRemaining = endTime - now;
-        if (timeRemaining <= 0) {
-            clearInterval(gameTimer);
-            endGame();
-        } else {
-            updateTimerDisplay();
-        }
-    }, 500);
-}
-
-function updateTimerDisplay() {
-    const minutes = Math.floor(timeRemaining / 60000);
-    const seconds = Math.floor((timeRemaining % 60000) / 1000);
-    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-}
-
-function removeDucks(){
-    ducks.forEach(duck => {
-        duck.element.remove();
-    });
-    ducks = [];
-}
-
 function endGame() {
+    localKillCount = getKillCount();
     gameContainer.style.display = 'none';
     resultContainer.style.display = 'flex';
     removeDucks();
@@ -186,45 +102,7 @@ function endGame() {
     finalScoreElement.textContent = `Your score: ${killCount}`;
     finalTopScoreElement.textContent = `Top score: ${bestScore > killCount ? bestScore : killCount}`;
     socket.emit('tracking_data', false);
-    timeRemaining = gameDuration;
 }
-
-function sendToLeaderBoard() {
-    const SB = document.getElementById("IEEE-SB").value;
-    const userName = document.getElementById("name").value;
-    const theMessage = document.getElementById("message").value;
-    const theScore = killCount;
-
-    fetch('http://localhost:5000/submit-score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ SB, userName, theMessage, theScore }),
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log(data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-function displayBestScore() {
-    fetch('http://localhost:5000/leaderboard')
-        .then(response => response.json())
-        .then(data => {
-            bestScore = data.bestScore;
-            document.getElementById('top-score').textContent = `Best score : ${bestScore}`
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-clickSpace.addEventListener( 'click' , (event) => {
-    event.stopPropagation();
-    shoot(event.clientX, event.clientY);
-});
 
 socket.on('position', (data) => {
     let x = parseInt(data.x * singleGameContainer.clientWidth);
@@ -234,7 +112,7 @@ socket.on('position', (data) => {
     } else if (data.player_id === player){
         bullet.show(x, y);
     } else {
-        player2Dialog.showModal();
+        showDialog(player2Dialog);
         shakeModals();
     }
 });
@@ -242,22 +120,5 @@ socket.on('position', (data) => {
 socket.on('intruder', (player) => {
     showIntruder(player);
 });
-
-function showIntruder(player) {
-    const intruderText = document.getElementById('intruder-text');
-    intruderText.textContent = `${player} get out!`;
-    if (player === "player1") {
-        intruderDialog.classList.remove("redD");
-        intruderDialog.classList.add("blueD");
-    } else if (player === "player2") {
-        intruderDialog.classList.remove("blueD");
-        intruderDialog.classList.add("redD");
-    }
-    intruderDialog.showModal();
-    shakeModals(intruderDialog);
-    setTimeout(() => {
-        intruderDialog.close();
-    }, 1000);
-}
 
 updateDucks();

@@ -9,9 +9,9 @@
 </head>
 <body>
     <div id="single-container">
-        <dialog id="unknown-player-dialog" class="player-dialog yellowD"><h2> Someone Shoot the Corners </h2></dialog>
-        <dialog id="player1-dialog" class="player-dialog blueD"><h2> Player 1 Shoot Corners </h2></dialog>
-        <dialog id="player2-dialog" class="player-dialog redD"><h2> Player 2 Shoot Corners </h2></dialog>
+        <div id="unknown-player-dialog" class="player-dialog yellowD"><h2> Someone Shoot the Corners </h2></div>
+        <div id="player1-dialog" class="player-dialog blueD"><h2> Player 1 Shoot Corners </h2></div>
+        <div id="player2-dialog" class="player-dialog redD"><h2> Player 2 Shoot Corners </h2></div>
         <img id="test-duck" src="./assets/images/alive-duck.png" alt="Duck">
         <h1>
             Shoot the ducks to adjust the positioning
@@ -29,7 +29,7 @@
         <audio id="start-sound" src="./assets/sound/start.wav"></audio>
     </div>
     <div id="single-game-container">
-        <dialog id="intruder-dialog" class="player-dialog"><h2 id="intruder-text"> Someone Shoot the Corners </h2></dialog>
+        <div id="intruder-dialog" class="player-dialog"><h2 id="intruder-text"> Someone Shoot the Corners </h2></div>
         <div id="click-space"></div>
         <img class="foreground" src="./assets/images/foreground.png" alt="grass">
         <img class="reload" src="./assets/images/reload.png" alt="arrows">
@@ -101,6 +101,7 @@
     </div>
     <audio id="shot-sound" src="./assets/sound/shot.m4a"></audio>
     <script src="./assets/js/classes.js"></script>
+    <script src="./assets/js/game.js"></script>
     <script src="./assets/js/singletest.js"></script>
     <script src="./assets/js/singleplayer.js"></script>
 </body>

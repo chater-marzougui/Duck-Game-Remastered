@@ -1,91 +1,16 @@
-const duck = document.getElementById('test-duck');
 const gameContainer = document.getElementById('multi-game-container');
 gameContainer.style.display = 'none';
-const testContainer = document.getElementById('single-container');
 
-const player1Dialog = document.getElementById('player1-dialog');
-const player2Dialog = document.getElementById('player2-dialog');
-
-let gameDuration = 2 * 60 * 1000;
-const duckImages = {
-    alive: 'assets/images/alive-duck.png',
-    dead: 'assets/images/dead-duck.png'
-};
-
-player1Dialog.showModal();
-
-function shakeModals() {
-    player1Dialog.style.animation = 'shake 0.5s linear infinite';
-    player2Dialog.style.animation = 'shake 0.5s linear infinite';
-    setTimeout(() => {
-        player1Dialog.style.animation = 'none';
-        player2Dialog.style.animation = 'none';
-    }, 700);
-}
-
-function changeTime() {
-    const newTime = document.getElementById('newTime').value;
-
-    let minutes = Math.floor(newTime);
-    let seconds = Math.floor((newTime - minutes) * 60);
-    let minutesDisplay = String(minutes).padStart(2, '0');
-    let secondsDisplay = String(seconds).padStart(2, '0');
-    document.getElementById('game-timer').textContent = `${minutesDisplay}:${secondsDisplay}`;
-
-    document.getElementById('timeForm').style.display = 'none';
-    gameDuration = newTime * 60 * 1000;
-    startGame();
-
-    return false;
-}
-
-document.getElementById('adjustTimeBtn').addEventListener('click', function() {
-    document.getElementById('timeForm').style.display = 'block';
-    document.getElementById('StartGame-Button').style.display = 'none';
-});
+showDialog(player1Dialog);
+shakeModals(player1Dialog);
 
 const testBullet = new Bullet(testContainer);
 const testBullet2 = new Bullet(testContainer, false);
 
-let clickCount = 1;
-let startGameB = false;
 let player1killCount = 0;
 let player2killCount = 0;
-
-const corners = [
-    { x: -40, y: -40, rotation: 135 },
-    { x: window.innerWidth + 40 - duck.width, y: -40, rotation: -135 },
-    { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
-    { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
-];
-
-const shootCorners = [
-    {x : 0, y : 0},
-    {x: window.innerWidth, y: 0},
-    {x: window.innerWidth, y: window.innerHeight},
-    {x: 0, y: window.innerHeight}
-]
-
-function saveCoordinates() {
-    fetch('http://localhost:5000/save_coordinates', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ game: "start" })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            console.log('Coordinates saved successfully');
-        } else {
-            console.error('Error saving coordinates:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+let clickCount = 1;
+let startGameB = false;
 
 function startGame() {
     if(startGameB){
@@ -109,34 +34,32 @@ function startGame() {
 }
 
 function turnToModal2() {
-    player1Dialog.close();
-    player2Dialog.showModal();
+    hideDialog(player1Dialog);
+    showDialog(player2Dialog);
+    shakeModals(player2Dialog);
 }
 
-function closeModals() {
-    player1Dialog.close();
-    player2Dialog.close();
+function closeModals(){
+    hideDialog(player1Dialog);
+    hideDialog(player2Dialog);
 }
-// duck.addEventListener('click', (event) => {
-//     duck.src = duckImages.dead;
-//     testBullet.show(event.clientX, event.clientY);
-//     setTimeout(() => {
-//         const { x, y, rotation } = corners[clickCount%4];
-//         duck.style.left = `${x}px`;
-//         duck.style.top = `${y}px`;
-//         duck.style.transform = `rotate(${rotation}deg)`;
-//         clickCoordinates.push({ x: event.clientX, y: event.clientY });
 
-//         if (clickCount === 8) {
-//             saveCoordinates();
-//             duck.style.display = 'none';
-//             startGameB = true;
-//         } else {
-//             clickCount++;
-//         }
-//         duck.src = duckImages.alive;
-//     }, 600);
-// });
+function addKillCount(player) {
+    if (player === "player1") {
+        player1killCount++;
+    } else {
+        player2killCount++;
+    }
+    updateKillCount();
+}
+
+function getKillCount(player) {
+    return player === "player1" ? player1killCount : player2killCount;
+}
+
+function getTotalKillCount() {
+    return player1killCount + player2killCount;
+}
 
 socket.on('adjustment_shot', (data) => {
     duck.src = duckImages.dead;
@@ -165,8 +88,13 @@ socket.on('adjustment_shot', (data) => {
     }, 600);
 });
 
-socket.on('shakeModals', () => {
-    shakeModals();
+socket.on('adjustment_done', (value) => {
+    if (value === true) {
+        duck.style.display = 'none';
+        startGameB = true;
+        closeModals();
+        testBullet.element.style.display = 'none';
+    }
 });
 
 socket.emit('adjust-shooting', {type: "MultiPlayer", height: window.innerHeight, width: window.innerWidth});

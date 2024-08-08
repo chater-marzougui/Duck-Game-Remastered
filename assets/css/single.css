@@ -109,6 +109,7 @@ body, html {
 }
 
 .player-dialog {
+    display: none;
     position: absolute;
     top: 50px;
     left: calc(50% - 272px);

@@ -23,7 +23,7 @@ class Duck {
         this.element.style.position = 'absolute';
         this.element.style.left = `${this.x}px`;
         this.element.style.top = `${this.y}px`;
-        this.element.style.transition = 'left 0.1s linear, top 0.1s linear';
+        this.element.style.transition = 'left 0.02s linear, top 0.02s linear';
         if (this.direction === 'left') {
             this.element.style.transform = 'rotateY(180deg)';
         }
@@ -69,14 +69,14 @@ class Duck {
     }
     
     fall() {
+        createDuck();
         const fallInterval = setInterval(() => {
             if (this.y < window.innerHeight) {
-                this.y += 5; // Speed of falling
+                this.y += 6;
                 this.element.style.top = `${this.y}px`;
             } else {
                 clearInterval(fallInterval);
                 this.element.remove();
-                createDuck();
             }
         }, 30); // Adjust the interval time for smooth falling animation
     }
@@ -122,15 +122,3 @@ class Bullet {
         }
     }
 }
-
-const socket = io('http://localhost:5000');
-
-socket.on('connect', () => {
-    console.log('Connected to WebSocket server');
-});
-
-socket.on('disconnect', () => {
-    console.log('Disconnected from WebSocket server');
-});
-
-socket.emit('tracking_data', true)

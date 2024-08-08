@@ -1,60 +1,24 @@
-const duck = document.getElementById('test-duck');
 const gameContainer = document.getElementById('single-game-container');
 gameContainer.style.display = 'none';
-const testContainer = document.getElementById('single-container');
-const player1Dialog = document.getElementById('player1-dialog');
-const player2Dialog = document.getElementById('player2-dialog');
 const unknownDialog = document.getElementById('unknown-player-dialog');
 const intruderDialog = document.getElementById('intruder-dialog');
 
-let gameDuration = 2 * 60 * 1000;
-const duckImages = {
-    alive: 'assets/images/alive-duck.png',
-    dead: 'assets/images/dead-duck.png'
-};
-
-unknownDialog.showModal();
-
-function shakeModals(Dialog) {
-    Dialog.style.animation = 'shake 0.5s linear infinite';
-    
-    setTimeout(() => {
-        Dialog.style.animation = 'none';
-    }, 700);
-}
-
+let player = 'player1';
 let clickCount = 1;
 let startGameB = false;
-let player = 'player1';
-
-const corners = [
-    { x: -40, y: -40, rotation: 135 },
-    { x: window.innerWidth + 40 - duck.width, y: -40, rotation: -135 },
-    { x: window.innerWidth + 40 - duck.width, y: window.innerHeight + 40 - duck.height, rotation: -45 },
-    { x: - 40, y: window.innerHeight + 40 - duck.height, rotation: 45 }
-];
-
-const shootCorners = [
-    {x : 0, y : 0},
-    {x: window.innerWidth, y: 0},
-    {x: window.innerWidth, y: window.innerHeight},
-    {x: 0, y: window.innerHeight}
-]
-
 let killCount = 0;
 const testBullet = new Bullet(testContainer);
 
-function turnToModal2() {
-    player1Dialog.close();
-    player2Dialog.showModal();
-}
+showDialog(unknownDialog);
+shakeModals(unknownDialog);
 
 function closeModals() {
-    player1Dialog.close();
-    player2Dialog.close();
-    unknownDialog.close();
-    intruderDialog.close();
+    hideDialog(player1Dialog);
+    hideDialog(player2Dialog);
+    hideDialog(unknownDialog);
+    hideDialog(intruderDialog);
 }
+
 
 function startGame() {
     if(startGameB){
@@ -67,7 +31,7 @@ function startGame() {
         startSound.currentTime = 0;
         startSound.play();
         killCount = 0;
-        updateTimerDisplay();
+        resetGameTimer();
         initializeDucks();
         displayBestScore();
         socket.emit('tracking_data' , true);
@@ -78,46 +42,14 @@ function startGame() {
         shakeModals(unknownDialog);
     }
 }
-function saveCoordinates() {
-    fetch('http://localhost:5000/save_coordinates', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ game: "start" })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            console.log('Coordinates saved successfully');
-        } else {
-            console.error('Error saving coordinates:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+
+function getKillCount() {
+    return killCount;
 }
 
-document.getElementById('adjustTimeBtn').addEventListener('click', function() {
-    document.getElementById('timeForm').style.display = 'block';
-    document.getElementById('StartGame-Button').style.display = 'none';
-});
-
-function changeTime() {
-    const newTime = document.getElementById('newTime').value;
-
-    let minutes = Math.floor(newTime);
-    let seconds = Math.floor((newTime - minutes) * 60);
-    let minutesDisplay = String(minutes).padStart(2, '0');
-    let secondsDisplay = String(seconds).padStart(2, '0');
-    document.getElementById('game-timer').textContent = `${minutesDisplay}:${secondsDisplay}`;
-
-    document.getElementById('timeForm').style.display = 'none';
-    gameDuration = newTime * 60 * 1000;
-    startGame();
-
-    return false;
+function addKillCount() {
+    killCount++;
+    return killCount;
 }
 
 socket.on('adjustment_shot', (data) => {
@@ -143,34 +75,25 @@ socket.on('adjustment_shot', (data) => {
     }, 600);
 });
 
+socket.on('determinePlayer', (data) => {
+    closeModals();
+    if (data === 'player1') {
+        showDialog(player1Dialog);
+        shakeModals(player1Dialog);
+        player = 'player1';
+    } else {
+        showDialog(player2Dialog);
+        shakeModals(player2Dialog);
+        player = 'player2';
+    }
+});
+
 socket.on('adjustment_done', (value) => {
     if (value === true) {
-        closeModals();
         duck.style.display = 'none';
         startGameB = true;
         closeModals();
         testBullet.element.style.display = 'none';
-    }
-});
-
-socket.on('shakeModals', (data) => {
-    if (data === 'player1') {
-        shakeModals(player2Dialog);
-    } else {
-        shakeModals(player1Dialog);
-    }
-});
-
-socket.on('determinePlayer', (data) => {
-    closeModals();
-    if (data === 'player1') {
-        player1Dialog.showModal();
-        shakeModals(player1Dialog);
-        player = 'player1';
-    } else {
-        player2Dialog.showModal();
-        shakeModals(player2Dialog);
-        player = 'player2';
     }
 });
 
