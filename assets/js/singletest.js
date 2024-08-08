@@ -25,6 +25,7 @@ function shakeModals(Dialog) {
 
 let clickCount = 1;
 let startGameB = false;
+let player = 'player1';
 
 const corners = [
     { x: -40, y: -40, rotation: 135 },
@@ -83,7 +84,7 @@ function saveCoordinates() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ coordinates: clickCoordinates })
+        body: JSON.stringify({ game: "start" })
     })
     .then(response => response.json())
     .then(data => {
@@ -123,7 +124,7 @@ socket.on('adjustment_shot', (data) => {
     duck.src = duckImages.dead;
     let x = shootCorners[(clickCount -1)%4].x;
     let y = shootCorners[(clickCount -1)%4].y;
-    testBullet.show(x, y);
+    testBullet.show(x, y, true);
     setTimeout(() => {
         const { x, y, rotation } = corners[clickCount>3?3:clickCount];
         duck.style.left = `${x}px`;
@@ -142,6 +143,16 @@ socket.on('adjustment_shot', (data) => {
     }, 600);
 });
 
+socket.on('adjustment_done', (value) => {
+    if (value === true) {
+        closeModals();
+        duck.style.display = 'none';
+        startGameB = true;
+        closeModals();
+        testBullet.element.style.display = 'none';
+    }
+});
+
 socket.on('shakeModals', (data) => {
     if (data === 'player1') {
         shakeModals(player2Dialog);
@@ -155,9 +166,11 @@ socket.on('determinePlayer', (data) => {
     if (data === 'player1') {
         player1Dialog.showModal();
         shakeModals(player1Dialog);
+        player = 'player1';
     } else {
         player2Dialog.showModal();
         shakeModals(player2Dialog);
+        player = 'player2';
     }
 });
 

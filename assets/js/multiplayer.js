@@ -225,6 +225,13 @@ function updateTimerDisplay() {
     timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
+function removeDucks(){
+    ducks.forEach(duck => {
+        duck.element.remove();
+    });
+    ducks = [];
+}
+
 function endGame() {
     gameContainer.style.display = 'none';
     removeDucks();

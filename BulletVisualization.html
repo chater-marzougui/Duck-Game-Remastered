@@ -17,6 +17,7 @@
         const singleGameContainer = document.getElementById('multi-game-container');
         let bullet = new Bullet(singleGameContainer);
 
+        socket.emit('sendData', {room: 'room1'});
         socket.on('position', (data) => {
             let x = parseInt(data.x * singleGameContainer.clientWidth);
             let y = parseInt(data.y * singleGameContainer.clientHeight);

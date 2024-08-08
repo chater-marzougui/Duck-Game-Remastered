@@ -19,7 +19,6 @@ updateTimerDisplay();
 
 let bulletsRemaining = bullets.length;
 let canShoot = true;
-let killCount = 0;
 let bestScore = 0;
 const bullet = new Bullet(singleGameContainer);
 
@@ -138,7 +137,7 @@ function resetBullets() {
 
 function shoot(x, y) {
     if (canShoot && bulletsRemaining > 0) {
-        bullet.show(x, y);
+        bullet.show(x, y, true);
         detectHit(x, y);
         bulletsRemaining--;
         updateBullets();
@@ -187,6 +186,7 @@ function endGame() {
     finalScoreElement.textContent = `Your score: ${killCount}`;
     finalTopScoreElement.textContent = `Top score: ${bestScore > killCount ? bestScore : killCount}`;
     socket.emit('tracking_data', false);
+    timeRemaining = gameDuration;
 }
 
 function sendToLeaderBoard() {
@@ -229,9 +229,9 @@ clickSpace.addEventListener( 'click' , (event) => {
 socket.on('position', (data) => {
     let x = parseInt(data.x * singleGameContainer.clientWidth);
     let y = parseInt(data.y * singleGameContainer.clientHeight);
-    if (data.should_shoot && data.player_id === "player1") {
+    if (data.should_shoot && data.player_id === player) {
         shoot(x, y);
-    } else if (data.player_id === "player1"){
+    } else if (data.player_id === player){
         bullet.show(x, y);
     } else {
         player2Dialog.showModal();

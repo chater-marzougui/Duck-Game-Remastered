@@ -1,3 +1,4 @@
+import random
 import cv2, time, threading, os, json, numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -186,6 +187,7 @@ def adjust_player_box(arr : list[tuple], player):
     x1, y1 = 99999, 99999
     x2, y2 = -1, -1
     for i in arr:
+        if i is None: continue
         x , y = i
         if x < x1 : x1 = x
         if y < y1 : y1 = y
@@ -272,21 +274,32 @@ def adjust_multi_player():
 
     adjust_player_box(arr1, 'player1')
     adjust_player_box(arr2, 'player2')
+    socketio.emit('adjustment_done', True)
 
+
+def player_detection():
+    global player1CanShoot, player2CanShoot, player
+    pos = None
+    while 1:
+        while not (player1CanShoot or player2CanShoot): time.sleep(0.01)
+        if player1CanShoot:
+            pos = detect_position('player1')
+            player1CanShoot = False
+            player = 'player1'
+        if player2CanShoot:
+            pos = detect_position('player2')
+            player2CanShoot = False
+            player = 'player2'
+        if pos:
+            socketio.emit('determinePlayer', player)
+            socketio.emit('adjustment_shot', player)
+            break
+    return pos
+    
 def adjust_single_player():
     global player1CanShoot, player2CanShoot, player
     arr1 = []
-    while not (player1CanShoot or player2CanShoot): time.sleep(0.01)
-    if player1CanShoot:
-        pos = detect_position('player1')
-        player1CanShoot = False
-        player = 'player1'
-    if player2CanShoot:
-        pos = detect_position('player2')
-        player2CanShoot = False
-        player = 'player2'
-    arr1.append(pos)
-    socketio.emit('determinePlayer', player)
+    arr1.append(player_detection())
     while len(arr1) != 4:
         while not (player1CanShoot or player2CanShoot): time.sleep(0.01)
         if player1CanShoot and player == 'player1':
@@ -296,14 +309,18 @@ def adjust_single_player():
             pos = detect_position('player2')
             player2CanShoot = False
         else:
-            socketio.emit('shakeModals', player)
+            socketio.emit('shakeModals', player); continue
+        if pos:
+            socketio.emit('adjustment_shot', player)
         arr1.append(pos)
     adjust_player_box(arr1, player)
+    socketio.emit('adjustment_done', True)
 
 
 @socketio.on('adjust-shooting')
 def adjust_shooting(data):
     global player1CanShoot, player2CanShoot, player
+    cap.read()
     if data.get('type') == "MultiPlayer":
         print("adjusting Multi player")
         player = ""
@@ -315,7 +332,6 @@ def adjust_shooting(data):
     thread = threading.Thread(target=camera_thread)
     thread.start()
         
-
 if __name__ == '__main__':
     try:
         socketio.run(app, debug=True, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

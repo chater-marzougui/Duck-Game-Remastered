@@ -98,16 +98,16 @@ class Bullet {
     }
 
     show(x, y, shoot = false) {
+        clearTimeout(this.resetTimeout);
         if(!this.isShot){
-            clearTimeout(this.resetTimeout);
             this.element.src = this.useShot1 ? 'assets/images/shot1.png' : 'assets/images/shot2.png';
             this.element.style.left = `${x - 25}px`;
             this.element.style.top = `${y - 25}px`;
             this.element.style.display = 'block';
             this.element.style.opacity = '1';
-            setTimeout(() => {
+            this.resetTimeout = setTimeout(() => {
                 this.element.style.opacity = '0';
-            }, 5000);
+            }, 2500);
         } else {
             this.element.src = this.useShot1 ? 'assets/images/shot1Hole.png' : 'assets/images/shot2Hole.png';
         }

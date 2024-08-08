@@ -98,6 +98,7 @@ function startGame() {
         startSound.play();
         player1killCount = 0;
         player2killCount = 0;
+        updateKillCount();
         initializeDucks();
         startGameTimer();
         socket.emit('tracking_data', true)
