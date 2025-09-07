@@ -253,6 +253,6 @@ Project Link: https://github.com/chater-marzougui/Duck-Game-Remastered
 [issues-shield]: https://img.shields.io/github/issues/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
 [issues-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/issues
 [license-shield]: https://img.shields.io/github/license/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
-[license-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/blob/master/LICENSE.txt
+[license-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/chater-marzougui-342125299/
