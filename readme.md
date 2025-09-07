@@ -12,24 +12,24 @@
 
 ---
 
-# 🛠️ [Project Name]
+# 🦆 Duck Game Remastered
 
-**A concise, one-sentence description of your project.**
+**A web-based duck shooting game featuring single player, multiplayer modes, and real-time competition.**
 Built with ❤️ by [Chater Marzougui](https://github.com/chater-marzougui).
 
 <br />
 <div align="center">
-  <a href="https://github.com/chater-marzougui/<REPO-NAME-HERE>">
-     <img src="[Link to Project Logo/Image]" alt="[Project Name] Logo" width="256" height="256">
+  <a href="https://github.com/chater-marzougui/Duck-Game-Remastered">
+     <img src="./assets/images/alive-duck.png" alt="Duck Game Remastered Logo" width="256" height="256">
   </a>
-  <h3>[Project Name]</h3>
+  <h3>Duck Game Remastered</h3>
   <p align="center">
-    <strong>A slightly more detailed, punchy description</strong>
+    <strong>An exciting web-based duck shooting game with multiplayer support</strong>
     <br />
     <br />
-    <a href="https://github.com/chater-marzougui/<REPO-NAME-HERE>/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/chater-marzougui/Duck-Game-Remastered/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/chater-marzougui/<REPO-NAME-HERE>/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/chater-marzougui/Duck-Game-Remastered/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
       </p>
 </div>
 
@@ -62,15 +62,15 @@ Built with ❤️ by [Chater Marzougui](https://github.com/chater-marzougui).
 
 ## About The Project
 
-**🚀 [Project Name]** is a comprehensive ... [Elaborate on the project's purpose, what it does, and why it's useful. Mention the core technologies or concepts.]
+**🦆 Duck Game Remastered** is a web-based duck shooting game that combines classic arcade gameplay with modern multiplayer features. Players can enjoy single-player mode or compete with friends in real-time multiplayer matches. The game features an interactive leaderboard system, special game modes, and innovative features like using your phone as a gun controller. Built with HTML5, CSS3, JavaScript, and Socket.io for seamless real-time multiplayer experiences.
 
 ### 🎯 Key Features
 
-- 🔧 **Feature 1**: [Description]
-- 🤖 **Feature 2**: [Description]
-- ⚡ **Feature 3**: [Description]
-- 🌐 **Feature 4**: [Description]
-- 📝 **Feature 5**: [Description]
+- 🎮 **Single Player Mode**: Practice your shooting skills against AI-controlled ducks
+- 👥 **Multiplayer Mode**: Real-time two-player competition with WebSocket support
+- 🏆 **Leaderboard System**: Track high scores and compete with other players
+- 📱 **Phone as Gun**: Innovative mobile controller integration for unique gameplay
+- 🎯 **Bullet Terrain Visualization**: Advanced graphics showing bullet trajectories and terrain interaction
 
 <div align="right">
   <a href="#readme-top">
@@ -83,70 +83,106 @@ Built with ❤️ by [Chater Marzougui](https://github.com/chater-marzougui).
 ## ⚡ Getting Started
 
 ### Prerequisites
-[List any prerequisites users need to have installed, like Node.js, Python, or a specific version of an OS.]
+To run Duck Game Remastered, you'll need:
+- A modern web browser (Chrome, Firefox, Safari, or Edge)
+- Python 3.x with the following packages:
+  - Flask
+  - Flask-CORS
+  - Flask-SocketIO
+  - OpenCV (cv2)
+  - NumPy
+- A local web server (optional but recommended)
+- A webcam (for ArUco marker detection features)
 
 ### Installation
-[Provide clear, numbered steps for installation. Use code blocks for commands.]
 
 ```bash
-# Step 1: Command to clone the repo
-git clone [Your Repo URL]
+# Step 1: Clone the repository
+git clone https://github.com/chater-marzougui/Duck-Game-Remastered.git
 
-# Step 2: Command to navigate to the project directory
-cd [Project Directory]
+# Step 2: Navigate to the project directory
+cd Duck-Game-Remastered
 
-# Step 3: Command to install dependencies
-npm install # or pip install -r requirements.txt, etc.
-````
+# Step 3: Install Python dependencies
+pip install flask flask-cors flask-socketio opencv-python numpy
 
-\<div align="right"\>
-  \<a href="\#readme-top"\>
-    \<img src="https://img.shields.io/badge/Back\_to\_Top-⬆️-blue?style=for-the-badge" alt="Back to Top"\>
-  \</a\>
-\</div\>
+# Step 4: Start the WebSocket server (for multiplayer support)
+python assets/python/leaderBoard.py
+
+# Step 5: Open index.html in your web browser
+# You can use a local server like:
+python -m http.server 8000
+# Then visit http://localhost:8000
+```
+
+<div align="right">
+  <a href="#readme-top">
+    <img src="https://img.shields.io/badge/Back_to_Top-⬆️-blue?style=for-the-badge" alt="Back to Top">
+  </a>
+</div>
 
 -----
 
 ## 📚 Usage
 
-[Explain how to use the project. Provide clear examples with code blocks for different use cases. You can create a table like you did if there are multiple sub-commands or tools.]
+### Game Modes
 
-```bash
-# Example 1: Basic usage
-[Your command]
+1. **Single Player Mode**
+   - Click on "Single Player" from the main menu
+   - Shoot the corners to calibrate your aim
+   - Click "Start" to begin the game
+   - Shoot ducks as they appear to score points
 
-# Example 2: Command with flags
-[Your command] --flag value
+2. **Multiplayer Mode** 
+   - Ensure the WebSocket server is running on port 5000
+   - Click on "Two Players" from the main menu
+   - Both players shoot corners to calibrate
+   - Click "Start" to begin competitive gameplay
 
-# Example 3: Different use case
-[Your other command]
-```
+3. **Special Features**
+   - **Phone as Gun**: Use your mobile device as a motion controller
+   - **Bullet Terrain**: Visualize bullet paths and terrain interactions
+   - **Leaderboard**: View high scores and player rankings
 
-\<div align="right"\>
-  \<a href="\#readme-top"\>
-    \<img src="https://img.shields.io/badge/Back\_to\_Top-⬆️-blue?style=for-the-badge" alt="Back to Top"\>
-  \</a\>
-\</div\>
+### Controls
+- **Mouse**: Aim and shoot
+- **Click**: Fire at ducks
+- **Phone Controller**: Tilt and tap to aim and shoot (when using Phone as Gun mode)
+
+<div align="right">
+  <a href="#readme-top">
+    <img src="https://img.shields.io/badge/Back_to_Top-⬆️-blue?style=for-the-badge" alt="Back to Top">
+  </a>
+</div>
 
 -----
 
 ## 🪛 Configuration
 
-[Detail any configuration options, such as environment variables, config files, or API keys. Explain how to set them up and provide an example file.]
+### Game Settings
 
-### Environment Variables
+You can customize the game experience by modifying the following settings in the JavaScript files:
 
-[Example environment variables section.]
-
-```env
-API_KEY=your_api_key_here
+### Time Configuration
+The game duration can be adjusted in `assets/js/game.js`:
+```javascript
+let gameDuration = 2 * 60 * 1000; // 2 minutes in milliseconds
 ```
 
-\<div align="right"\>
-  \<a href="\#readme-top"\>
-    \<img src="https://img.shields.io/badge/Back\_to\_Top-⬆️-blue?style=for-the-badge" alt="Back to Top"\>
-  \</a\>
-\</div\>
+### Server Configuration
+For multiplayer functionality, the WebSocket server runs on:
+```javascript
+const socket = io('http://localhost:5000');
+```
+
+### Leaderboard Data
+Player scores are stored in `leaderboard.json` and can be reset or modified as needed.
+
+<div align="right">
+  <a href="#readme-top">
+    <img src="https://img.shields.io/badge/Back_to_Top-⬆️-blue?style=for-the-badge" alt="Back to Top">
+  </a>
+</div>
 
 -----
 
@@ -162,58 +198,61 @@ Contributions are what make the open source community amazing\! Any contribution
 4.  **Push to the Branch** (`git push origin feature/AmazingFeature`)
 5.  **Open a Pull Request**
 
-\<div align="right"\>
-  \<a href="\#readme-top"\>
-    \<img src="https://img.shields.io/badge/Back\_to\_Top-⬆️-blue?style=for-the-badge" alt="Back to Top"\>
-  \</a\>
-\</div\>
+<div align="right">
+  <a href="#readme-top">
+    <img src="https://img.shields.io/badge/Back_to_Top-⬆️-blue?style=for-the-badge" alt="Back to Top">
+  </a>
+</div>
 
 -----
 
 ## 📃 License
 
-Distributed under the [License Name] License. See `LICENSE` for more information.
+This project is open source and available under the MIT License. See `LICENSE` for more information.
 
-\<div align="right"\>
-  \<a href="\#readme-top"\>
-    \<img src="https://img.shields.io/badge/Back\_to\_Top-⬆️-blue?style=for-the-badge" alt="Back to Top"\>
-  \</a\>
-\</div\>
+<div align="right">
+  <a href="#readme-top">
+    <img src="https://img.shields.io/badge/Back_to_Top-⬆️-blue?style=for-the-badge" alt="Back to Top">
+  </a>
+</div>
 
 -----
 
 ## 📧 Contact
 
-**[Your Name]** - [@YourGitHub]([Your GitHub Profile URL]) - [Your Email Address]
+**Chater Marzougui** - [@chater-marzougui](https://github.com/chater-marzougui) - [LinkedIn](https://www.linkedin.com/in/chater-marzougui-342125299/)
 
-Project Link: [Your Repo URL]
+Project Link: https://github.com/chater-marzougui/Duck-Game-Remastered
 
 -----
 
 ## 🙏 Acknowledgments
 
-[List any resources, communities, or individuals you'd like to thank for their help or inspiration.]
+- IEEE Sup'Com SB (Student Branch) for providing the platform and support
+- Socket.io for real-time multiplayer functionality
+- The web development community for inspiration and resources
+- All the players who have contributed to the leaderboard and provided feedback
 
-\<div align="right"\>
-  \<a href="\#readme-top"\>
-    \<img src="https://img.shields.io/badge/Back\_to\_Top-⬆️-blue?style=for-the-badge" alt="Back to Top"\>
-  \</a\>
-\</div\>
+<div align="right">
+  <a href="#readme-top">
+    <img src="https://img.shields.io/badge/Back_to_Top-⬆️-blue?style=for-the-badge" alt="Back to Top">
+  </a>
+</div>
 
 -----
 
-[Add a brief, concluding sentence or tagline for your project.]
+🦆 **Ready, Aim, Duck!** - Experience the thrill of classic duck hunting in a modern web environment.
 
 
-[contributors-shield]: https://img.shields.io/github/contributors/chater-marzougui/<REPO-NAME-HERE>.svg?style=for-the-badge
-[contributors-url]: https://github.com/chater-marzougui/<REPO-NAME-HERE>/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/chater-marzougui/<REPO-NAME-HERE>.svg?style=for-the-badge
-[forks-url]: https://github.com/chater-marzougui/<REPO-NAME-HERE>/network/members
-[stars-shield]: https://img.shields.io/github/stars/chater-marzougui/<REPO-NAME-HERE>.svg?style=for-the-badge
-[stars-url]: https://github.com/chater-marzougui/<REPO-NAME-HERE>/stargazers
-[issues-shield]: https://img.shields.io/github/issues/chater-marzougui/<REPO-NAME-HERE>.svg?style=for-the-badge
-[issues-url]: https://github.com/chater-marzougui/<REPO-NAME-HERE>/issues
-[license-shield]: https://img.shields.io/github/license/chater-marzougui/<REPO-NAME-HERE>.svg?style=for-the-badge
-[license-url]: https://github.com/chater-marzougui/<REPO-NAME-HERE>/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
+[contributors-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
+[forks-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/network/members
+[stars-shield]: https://img.shields.io/github/stars/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
+[stars-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/stargazers
+[issues-shield]: https://img.shields.io/github/issues/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
+[issues-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/issues
+[license-shield]: https://img.shields.io/github/license/chater-marzougui/Duck-Game-Remastered.svg?style=for-the-badge
+[license-url]: https://github.com/chater-marzougui/Duck-Game-Remastered/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/chater-marzougui-342125299/
